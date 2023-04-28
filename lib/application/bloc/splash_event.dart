@@ -4,3 +4,7 @@ part of 'splash_bloc.dart';
 abstract class SplashEvent {}
 
 class FetchDeviceId extends SplashEvent {}
+
+class FetchLayoutDetails extends SplashEvent {}
+
+class FetchLayoutModify extends SplashEvent {}

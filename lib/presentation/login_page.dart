@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:split_screen_app/application/bloc/splash_bloc.dart';
 import 'package:split_screen_app/core/styles_manager.dart';
+import 'package:split_screen_app/presentation/presentaion_screen.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -12,11 +15,41 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   String? deviceId;
+  Timer? timer;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {});
+    BlocProvider.of<SplashBloc>(context).add(
+      FetchLayoutDetails(),
+    );
+
+    // BlocProvider.of<SplashBloc>(context).add(
+    //   FetchDeviceId(),
+    // );
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      timer = Timer.periodic(const Duration(seconds: 2), (timer) {
+        final myBlocState = context.read<SplashBloc>().state;
+        if (myBlocState is SplashLoaded && myBlocState.isDeviceReg == true) {
+          timer.cancel();
+          print("return");
+          return;
+        }
+        print("______________");
+        BlocProvider.of<SplashBloc>(context).add(
+          FetchLayoutDetails(),
+        );
+
+        print("Timer");
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    timer?.cancel();
+    print("dispose");
   }
 
   @override
@@ -65,7 +98,16 @@ class _LoginPageState extends State<LoginPage> {
                 const SizedBox(
                   height: 20,
                 ),
-                BlocBuilder<SplashBloc, SplashState>(
+                BlocConsumer<SplashBloc, SplashState>(
+                  listener: (context, state) {
+                    if (state is SplashLoaded && state.isDeviceReg == true) {
+                      Navigator.pushReplacement(context,
+                          MaterialPageRoute(builder: (ctx) {
+                        return const ImageScreen();
+                      }));
+                      // timer?.cancel();
+                    }
+                  },
                   builder: (context, state) {
                     if (state is SplashLoaded) {
                       return Container(
@@ -82,9 +124,11 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ),
                       );
-                    } else {
-                      return Container();
                     }
+                    // else if (state is LayoutLoading) {
+                    //   return const CircularProgressIndicator();
+                    // }
+                    return Container();
                   },
                 )
               ],
