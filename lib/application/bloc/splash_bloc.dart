@@ -134,10 +134,11 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
         DeviceLayoutDetails deviceDetailsModel =
             result.getOrElse(() => DeviceLayoutDetails());
         emit(SplashLoaded(
-          deviceId: deviceId,
-          isDeviceReg: true,
-          deviceDetails: deviceDetailsModel,
-        ));
+            deviceId: deviceId,
+            isDeviceReg: true,
+            deviceDetails: deviceDetailsModel,
+            isScreenRef: true));
+
         // await Future.delayed(const Duration(seconds: 3));
         final updatedTime = jsonResponse["device_details"]["layout_updated_at"];
         Hive.box("updated_at").put('time', updatedTime ?? '');

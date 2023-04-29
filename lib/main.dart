@@ -11,6 +11,7 @@ void main() async {
   await Hive.openBox("device_id");
   await Hive.openBox("updated_at");
   await SystemChrome.setPreferredOrientations([
+    // DeviceOrientation.portraitUp,
     DeviceOrientation.landscapeLeft,
     DeviceOrientation.landscapeRight,
   ]);
@@ -33,6 +34,7 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue,
         ),
         home: const LandingScreen(),
+        // home: const YoutubeVlcPlayer(videoId: 'qUzpCqXZIYw'),
       ),
     );
   }

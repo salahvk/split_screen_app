@@ -2,13 +2,16 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:split_screen_app/application/bloc/splash_bloc.dart';
 import 'package:split_screen_app/domain/core/api_endPoint.dart';
-import 'package:split_screen_app/presentation/widgets/four_screens.dart';
-import 'package:split_screen_app/presentation/widgets/one_screen.dart';
-import 'package:split_screen_app/presentation/widgets/three_screens.dart';
-import 'package:split_screen_app/presentation/widgets/two_screens.dart';
+import 'package:split_screen_app/presentation/widgets/screens/four_screens.dart';
+import 'package:split_screen_app/presentation/widgets/screens/one_screen.dart';
+import 'package:split_screen_app/presentation/widgets/screens/three_screens.dart';
+import 'package:split_screen_app/presentation/widgets/screens/two_screens.dart';
+import 'package:split_screen_app/presentation/widgets/screens/two_screens_port.dart';
+
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
@@ -42,6 +45,7 @@ class _ImageScreenState extends State<ImageScreen> {
     super.initState();
     final myBlocState = context.read<SplashBloc>().state;
     if (myBlocState is SplashLoaded) {
+      log("++++++++++++++++");
       if (myBlocState.deviceDetails?.media?[0].type != "image") {
         url1 = myBlocState.deviceDetails?.media?[0].type == "video"
             ? "$endPoint${myBlocState.deviceDetails?.media?[0].file}"
@@ -158,6 +162,7 @@ class _ImageScreenState extends State<ImageScreen> {
           enableCaption: true,
         ),
       )..addListener(listener);
+      log(url2 ?? '');
 
       _videoMetaData = const YoutubeMetaData();
       _playerState = PlayerState.unknown;
@@ -185,6 +190,9 @@ class _ImageScreenState extends State<ImageScreen> {
   @override
   void dispose() {
     ytcontroller.dispose();
+    ytcontroller2.dispose();
+    ytcontroller3.dispose();
+    ytcontroller4.dispose();
 
     super.dispose();
   }
@@ -192,12 +200,28 @@ class _ImageScreenState extends State<ImageScreen> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    return BlocBuilder<SplashBloc, SplashState>(
+    return BlocConsumer<SplashBloc, SplashState>(
+      listener: (context, state) {
+        if (state is SplashLoaded && state.isScreenRef == true) {
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) {
+            return const ImageScreen();
+          }));
+        }
+      },
       builder: (context, state) {
         if (state is SplashLoaded) {
           final eleCou = state.deviceDetails?.deviceDetails?.elements;
 
           if (eleCou == 4) {
+            if (state.deviceDetails?.deviceDetails?.orientation == 'portrait') {
+              SystemChrome.setPreferredOrientations([
+                DeviceOrientation.portraitUp,
+              ]);
+            } else {
+              SystemChrome.setPreferredOrientations([
+                DeviceOrientation.landscapeLeft,
+              ]);
+            }
             return buildFourScreens(
                 context,
                 state,
@@ -210,6 +234,15 @@ class _ImageScreenState extends State<ImageScreen> {
                 ytcontroller3,
                 ytcontroller4);
           } else if (eleCou == 3) {
+            if (state.deviceDetails?.deviceDetails?.orientation == 'portrait') {
+              SystemChrome.setPreferredOrientations([
+                DeviceOrientation.portraitUp,
+              ]);
+            } else {
+              SystemChrome.setPreferredOrientations([
+                DeviceOrientation.landscapeLeft,
+              ]);
+            }
             return buildThreeScreens(
               context,
               state,
@@ -220,7 +253,24 @@ class _ImageScreenState extends State<ImageScreen> {
               ytcontroller2,
               ytcontroller3,
             );
-          } else if (eleCou == 2) {
+          } else if (eleCou == 2 &&
+              state.deviceDetails?.deviceDetails?.orientation == 'portrait') {
+            SystemChrome.setPreferredOrientations([
+              DeviceOrientation.portraitUp,
+            ]);
+            return buildTwoScreensPor(
+              context,
+              state,
+              controller,
+              controller2,
+              ytcontroller,
+              ytcontroller2,
+            );
+          } else if (eleCou == 2 &&
+              state.deviceDetails?.deviceDetails?.orientation == 'landscape') {
+            SystemChrome.setPreferredOrientations([
+              DeviceOrientation.landscapeLeft,
+            ]);
             return buildTwoScreens(
               context,
               state,
@@ -229,7 +279,22 @@ class _ImageScreenState extends State<ImageScreen> {
               ytcontroller,
               ytcontroller2,
             );
-          } else if (eleCou == 1) {
+          } else if (eleCou == 1 &&
+              state.deviceDetails?.deviceDetails?.orientation == 'portrait') {
+            SystemChrome.setPreferredOrientations([
+              DeviceOrientation.portraitUp,
+            ]);
+            return buildOneScreen(
+              context,
+              state,
+              controller,
+              ytcontroller,
+            );
+          } else if (eleCou == 1 &&
+              state.deviceDetails?.deviceDetails?.orientation == 'landscape') {
+            SystemChrome.setPreferredOrientations([
+              DeviceOrientation.landscapeLeft,
+            ]);
             return buildOneScreen(
               context,
               state,
@@ -250,7 +315,7 @@ Widget buildImage(BuildContext context) {
   return Scaffold(
     body: Image.asset(
       'assets/image.png',
-      fit: BoxFit.cover,
+      fit: BoxFit.fitWidth,
       width: size.width,
       height: size.height,
     ),
@@ -295,28 +360,20 @@ Widget buildImage(BuildContext context) {
 // }
 
 Widget buildvideo(
-    BuildContext context, size, WebViewController controller, height) {
+    BuildContext context, size, WebViewController vlcController, height) {
   return Expanded(
     child: ClipRRect(
       borderRadius: BorderRadius.circular(14),
       child: Container(
-          height: height,
-          width: size.width,
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(25)),
-          child: WebViewWidget(controller: controller)
-          //     YoutubePlayer(
-          //   controller: controller,
-          //   showVideoProgressIndicator: true,
-          //   // videoProgressIndicatorColor: Colors.amber,
-          //   progressColors: const ProgressBarColors(
-          //     playedColor: Colors.amber,
-          //     handleColor: Colors.amberAccent,
-          //   ),
-          //   // onReady: () {
-          //   //   _isPlayerReady = true;
-          //   // },
-          // ),
-          ),
+        height: height,
+        width: size.width,
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(25)),
+        child: WebViewWidget(
+          controller: vlcController,
+
+          // showControls: true,
+        ),
+      ),
     ),
   );
 }
@@ -327,7 +384,7 @@ Widget buildOneImage(size, state, index, height) {
       borderRadius: BorderRadius.circular(14),
       child: Image.network(
         "$endPoint${state.deviceDetails?.media?[index].file}",
-        fit: BoxFit.fill,
+        fit: BoxFit.contain,
         width: size.width,
         height: height,
       ),
@@ -360,27 +417,27 @@ Widget buildYtbvideo(BuildContext context, size, ytcontroller, height) {
   );
 }
 
-Widget buildYtbvideo2(BuildContext context, size, ytcontroller, height) {
-  return Expanded(
-    child: ClipRRect(
-      borderRadius: BorderRadius.circular(14),
-      child: Container(
-        height: height,
-        width: size.width,
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(25)),
-        child: YoutubePlayer(
-          controller: ytcontroller,
-          showVideoProgressIndicator: true,
-          // videoProgressIndicatorColor: Colors.amber,
-          progressColors: const ProgressBarColors(
-            playedColor: Color.fromARGB(255, 0, 0, 0),
-            handleColor: Color.fromARGB(255, 66, 55, 13),
-          ),
-          // onReady: () {
-          //   _isPlayerReady = true;
-          // },
-        ),
-      ),
-    ),
-  );
-}
+// Widget buildYtbvideo2(BuildContext context, size, ytcontroller, height) {
+//   return Expanded(
+//     child: ClipRRect(
+//       borderRadius: BorderRadius.circular(14),
+//       child: Container(
+//         height: height,
+//         width: size.width,
+//         decoration: BoxDecoration(borderRadius: BorderRadius.circular(25)),
+//         child: YoutubePlayer(
+//           controller: ytcontroller,
+//           showVideoProgressIndicator: true,
+//           // videoProgressIndicatorColor: Colors.amber,
+//           progressColors: const ProgressBarColors(
+//             playedColor: Color.fromARGB(255, 0, 0, 0),
+//             handleColor: Color.fromARGB(255, 66, 55, 13),
+//           ),
+//           // onReady: () {
+//           //   _isPlayerReady = true;
+//           // },
+//         ),
+//       ),
+//     ),
+//   );
+// }

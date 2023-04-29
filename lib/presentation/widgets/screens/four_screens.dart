@@ -3,16 +3,17 @@ import 'package:split_screen_app/application/bloc/splash_bloc.dart';
 import 'package:split_screen_app/presentation/presentaion_screen.dart';
 
 Widget buildFourScreens(
-    BuildContext context,
-    SplashLoaded state,
-    controller,
-    controller2,
-    controller3,
-    controller4,
-    ytController,
-    ytController2,
-    ytController3,
-    ytController4) {
+  BuildContext context,
+  SplashLoaded state,
+  vlcontroller,
+  vlcontroller2,
+  vlcontroller3,
+  vlcontroller4,
+  ytController,
+  ytController2,
+  ytController3,
+  ytController4,
+) {
   final size = MediaQuery.of(context).size;
   return Scaffold(
     backgroundColor: Colors.black,
@@ -30,7 +31,7 @@ Widget buildFourScreens(
                             context, size, ytController, size.height * .42)
                         : state.deviceDetails?.media?[0].type == 'video'
                             ? buildvideo(
-                                context, size, controller, size.height * .42)
+                                context, size, vlcontroller, size.height * .42)
                             : Container(),
 
                 // state.deviceDetails?.media?[0].type != 'image'
@@ -48,7 +49,7 @@ Widget buildFourScreens(
                             context, size, ytController2, size.height * .42)
                         : state.deviceDetails?.media?[1].type == 'video'
                             ? buildvideo(
-                                context, size, controller2, size.height * .42)
+                                context, size, vlcontroller2, size.height * .42)
                             : Container(),
               ],
             ),
@@ -64,7 +65,7 @@ Widget buildFourScreens(
                             context, size, ytController3, size.height * .42)
                         : state.deviceDetails?.media?[2].type == 'video'
                             ? buildvideo(
-                                context, size, controller3, size.height * .42)
+                                context, size, vlcontroller3, size.height * .42)
                             : Container(),
                 const SizedBox(
                   width: 5,
@@ -72,11 +73,11 @@ Widget buildFourScreens(
                 state.deviceDetails?.media?[3].type == 'image'
                     ? buildOneImage(size, state, 3, size.height * .42)
                     : state.deviceDetails?.media?[3].type == 'youtube'
-                        ? buildYtbvideo2(
+                        ? buildYtbvideo(
                             context, size, ytController4, size.height * .42)
                         : state.deviceDetails?.media?[3].type == 'video'
                             ? buildvideo(
-                                context, size, controller4, size.height * .42)
+                                context, size, vlcontroller4, size.height * .42)
                             : Container(),
               ],
             ),

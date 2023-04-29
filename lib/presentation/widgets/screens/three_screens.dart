@@ -2,8 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:split_screen_app/application/bloc/splash_bloc.dart';
 import 'package:split_screen_app/presentation/presentaion_screen.dart';
 
-Widget buildThreeScreens(BuildContext context, SplashLoaded state, controller,
-    controller2, controller3, ytController, ytController2, ytController3) {
+Widget buildThreeScreens(
+  BuildContext context,
+  SplashLoaded state,
+  controller,
+  controller2,
+  controller3,
+  ytController,
+  ytController2,
+  ytController3,
+) {
   final size = MediaQuery.of(context).size;
   return Scaffold(
     backgroundColor: Colors.black,
@@ -36,7 +44,7 @@ Widget buildThreeScreens(BuildContext context, SplashLoaded state, controller,
                         context, size, ytController2, size.height * .9)
                     : state.deviceDetails?.media?[1].type == 'video'
                         ? buildvideo(
-                            context, size, controller, size.height * .9)
+                            context, size, controller2, size.height * .9)
                         : Container(),
             // state.deviceDetails?.media?[1].type != 'image'
             //     ? buildvideo(context, size, controller2, size.height * .9)
@@ -53,7 +61,7 @@ Widget buildThreeScreens(BuildContext context, SplashLoaded state, controller,
                         context, size, ytController3, size.height * .9)
                     : state.deviceDetails?.media?[2].type == 'video'
                         ? buildvideo(
-                            context, size, controller, size.height * .9)
+                            context, size, controller3, size.height * .9)
                         : Container(),
           ],
         ),

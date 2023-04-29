@@ -11,14 +11,15 @@ class SplashLoaded extends SplashState {
   String? deviceId;
   bool? isDeviceReg;
   bool? isNavToLogin;
+  bool? isScreenRef;
 
   DeviceLayoutDetails? deviceDetails;
-  SplashLoaded({
-    this.deviceId,
-    this.isDeviceReg,
-    this.deviceDetails,
-    this.isNavToLogin,
-  });
+  SplashLoaded(
+      {this.deviceId,
+      this.isDeviceReg,
+      this.deviceDetails,
+      this.isNavToLogin,
+      this.isScreenRef});
 }
 
 // class LayoutLoading extends SplashState {}

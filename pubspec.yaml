@@ -49,6 +49,9 @@ dependencies:
   youtube_player_flutter: ^8.1.2
   hive: ^2.2.3
   hive_flutter: ^1.1.0
+  youtube_player_iframe: ^4.0.4
+  flutter_vlc_player: ^7.2.0
+  youtube_explode_dart: ^1.12.4
 
 
 dev_dependencies:
