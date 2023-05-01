@@ -6,6 +6,7 @@ import 'package:dartz/dartz.dart';
 import 'package:hive/hive.dart';
 import 'package:meta/meta.dart';
 import 'package:platform_device_id/platform_device_id.dart';
+import 'package:split_screen_app/core/utils/set_controllers.dart';
 import 'package:split_screen_app/domain/core/api_endPoint.dart';
 import 'package:split_screen_app/domain/device_layout_details/device_layout_details.dart';
 import 'package:http/http.dart' as http;
@@ -53,6 +54,8 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
               await LayoutImp().getLayoutDetails();
           DeviceLayoutDetails deviceDetailsModel =
               result.getOrElse(() => DeviceLayoutDetails());
+          await setControllers(deviceDetailsModel);
+
           emit(SplashLoaded(
               deviceId: deviceId,
               isDeviceReg: true,
@@ -98,6 +101,7 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
                 await LayoutImp().getLayoutDetails();
             DeviceLayoutDetails deviceDetailsModel =
                 result.getOrElse(() => DeviceLayoutDetails());
+            await setControllers(deviceDetailsModel);
             emit(SplashLoaded(
                 deviceId: deviceId,
                 isDeviceReg: true,
@@ -133,6 +137,7 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
             await LayoutImp().getLayoutDetails();
         DeviceLayoutDetails deviceDetailsModel =
             result.getOrElse(() => DeviceLayoutDetails());
+        await setControllers(deviceDetailsModel);
         emit(SplashLoaded(
             deviceId: deviceId,
             isDeviceReg: true,

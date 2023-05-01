@@ -9,8 +9,6 @@ Widget buildThreeScreens(
   controller2,
   controller3,
   ytController,
-  ytController2,
-  ytController3,
 ) {
   final size = MediaQuery.of(context).size;
   return Scaffold(
@@ -39,13 +37,7 @@ Widget buildThreeScreens(
             ),
             state.deviceDetails?.media?[1].type == 'image'
                 ? buildOneImage(size, state, 1, size.height * .9)
-                : state.deviceDetails?.media?[1].type == 'youtube'
-                    ? buildYtbvideo(
-                        context, size, ytController2, size.height * .9)
-                    : state.deviceDetails?.media?[1].type == 'video'
-                        ? buildvideo(
-                            context, size, controller2, size.height * .9)
-                        : Container(),
+                : buildvideo(context, size, controller2, size.height * .9),
             // state.deviceDetails?.media?[1].type != 'image'
             //     ? buildvideo(context, size, controller2, size.height * .9)
             //     : state.deviceDetails?.media?[1].type == 'image'
@@ -56,13 +48,7 @@ Widget buildThreeScreens(
             ),
             state.deviceDetails?.media?[2].type == 'image'
                 ? buildOneImage(size, state, 2, size.height * .9)
-                : state.deviceDetails?.media?[2].type == 'youtube'
-                    ? buildYtbvideo(
-                        context, size, ytController3, size.height * .9)
-                    : state.deviceDetails?.media?[2].type == 'video'
-                        ? buildvideo(
-                            context, size, controller3, size.height * .9)
-                        : Container(),
+                : buildvideo(context, size, controller3, size.height * .9),
           ],
         ),
       ),

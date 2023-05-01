@@ -10,9 +10,6 @@ Widget buildFourScreens(
   vlcontroller3,
   vlcontroller4,
   ytController,
-  ytController2,
-  ytController3,
-  ytController4,
 ) {
   final size = MediaQuery.of(context).size;
   return Scaffold(
@@ -44,13 +41,8 @@ Widget buildFourScreens(
                 ),
                 state.deviceDetails?.media?[1].type == 'image'
                     ? buildOneImage(size, state, 1, size.height * .42)
-                    : state.deviceDetails?.media?[1].type == 'youtube'
-                        ? buildYtbvideo(
-                            context, size, ytController2, size.height * .42)
-                        : state.deviceDetails?.media?[1].type == 'video'
-                            ? buildvideo(
-                                context, size, vlcontroller2, size.height * .42)
-                            : Container(),
+                    : buildvideo(
+                        context, size, vlcontroller2, size.height * .42)
               ],
             ),
             const SizedBox(
@@ -60,25 +52,15 @@ Widget buildFourScreens(
               children: [
                 state.deviceDetails?.media?[2].type == 'image'
                     ? buildOneImage(size, state, 2, size.height * .42)
-                    : state.deviceDetails?.media?[2].type == 'youtube'
-                        ? buildYtbvideo(
-                            context, size, ytController3, size.height * .42)
-                        : state.deviceDetails?.media?[2].type == 'video'
-                            ? buildvideo(
-                                context, size, vlcontroller3, size.height * .42)
-                            : Container(),
+                    : buildvideo(
+                        context, size, vlcontroller3, size.height * .42),
                 const SizedBox(
                   width: 5,
                 ),
                 state.deviceDetails?.media?[3].type == 'image'
                     ? buildOneImage(size, state, 3, size.height * .42)
-                    : state.deviceDetails?.media?[3].type == 'youtube'
-                        ? buildYtbvideo(
-                            context, size, ytController4, size.height * .42)
-                        : state.deviceDetails?.media?[3].type == 'video'
-                            ? buildvideo(
-                                context, size, vlcontroller4, size.height * .42)
-                            : Container(),
+                    : buildvideo(
+                        context, size, vlcontroller4, size.height * .42)
               ],
             ),
           ],

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:split_screen_app/application/bloc/splash_bloc.dart';
 import 'package:split_screen_app/domain/core/api_endPoint.dart';
-import 'package:webview_flutter/webview_flutter.dart';
+import 'package:video_player/video_player.dart';
+
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 Widget buildOneScreen(
@@ -44,14 +45,14 @@ Widget buildImage(size, state, index, height) {
 }
 
 Widget buildvid(
-    BuildContext context, size, WebViewController controller, height) {
+    BuildContext context, size, VideoPlayerController controller, height) {
   return ClipRRect(
     borderRadius: BorderRadius.circular(14),
     child: Container(
         height: height,
         width: size.width,
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(25)),
-        child: WebViewWidget(controller: controller)
+        child: VideoPlayer(controller)
         //     YoutubePlayer(
         //   controller: controller,
         //   showVideoProgressIndicator: true,

@@ -8,7 +8,6 @@ Widget buildTwoScreensPor(
   controller,
   controller2,
   ytController1,
-  ytController2,
 ) {
   final size = MediaQuery.of(context).size;
   return Scaffold(
@@ -32,13 +31,7 @@ Widget buildTwoScreensPor(
             ),
             state.deviceDetails?.media?[1].type == 'image'
                 ? buildOneImage(size, state, 1, size.height * .9)
-                : state.deviceDetails?.media?[1].type == 'youtube'
-                    ? buildYtbvideo(
-                        context, size, controller2, size.height * .9)
-                    : state.deviceDetails?.media?[1].type == 'video'
-                        ? buildvideo(
-                            context, size, controller2, size.height * .9)
-                        : Container(),
+                : buildvideo(context, size, controller2, size.height * .9)
           ],
         ),
       ),

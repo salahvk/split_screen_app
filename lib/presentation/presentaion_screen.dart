@@ -5,14 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:split_screen_app/application/bloc/splash_bloc.dart';
+import 'package:split_screen_app/core/controllers/controllers.dart';
 import 'package:split_screen_app/domain/core/api_endPoint.dart';
+import 'package:split_screen_app/presentation/controls.dart';
 import 'package:split_screen_app/presentation/widgets/screens/four_screens.dart';
 import 'package:split_screen_app/presentation/widgets/screens/one_screen.dart';
 import 'package:split_screen_app/presentation/widgets/screens/three_screens.dart';
 import 'package:split_screen_app/presentation/widgets/screens/two_screens.dart';
 import 'package:split_screen_app/presentation/widgets/screens/two_screens_port.dart';
-
-import 'package:webview_flutter/webview_flutter.dart';
+import 'package:video_player/video_player.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class ImageScreen extends StatefulWidget {
@@ -23,149 +24,94 @@ class ImageScreen extends StatefulWidget {
 }
 
 class _ImageScreenState extends State<ImageScreen> {
-  WebViewController? controller;
-  WebViewController? controller2;
-  WebViewController? controller3;
-  WebViewController? controller4;
+  // VideoPlayerController? controller;
+  // VideoPlayerController? controller2;
+  // VideoPlayerController? controller3;
+  // VideoPlayerController? controller4;
   Timer? timer;
-  late YoutubePlayerController ytcontroller;
-  late YoutubePlayerController ytcontroller2;
-  late YoutubePlayerController ytcontroller3;
-  late YoutubePlayerController ytcontroller4;
-  late PlayerState _playerState;
-  late YoutubeMetaData _videoMetaData;
-  String? url1;
-  String? url2;
-  String? url3;
-  String? url4;
+
+  // String? url1;
+  // String? url2;
+  // String? url3;
+  // String? url4;
   final bool _isPlayerReady = false;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+
     final myBlocState = context.read<SplashBloc>().state;
     if (myBlocState is SplashLoaded) {
       log("++++++++++++++++");
-      if (myBlocState.deviceDetails?.media?[0].type != "image") {
-        url1 = myBlocState.deviceDetails?.media?[0].type == "video"
-            ? "$endPoint${myBlocState.deviceDetails?.media?[0].file}"
-            : myBlocState.deviceDetails?.media?[0].file;
-        if (myBlocState.deviceDetails?.media?[0].type == "video") {
-          controller = WebViewController()
-            ..setJavaScriptMode(JavaScriptMode.unrestricted)
-            ..setBackgroundColor(Colors.white)
-            ..loadRequest(Uri.parse(url1 ?? ''));
-        }
-      }
-      if (myBlocState.deviceDetails!.deviceDetails!.elements! > 1) {
-        if (myBlocState.deviceDetails?.media?[1].type != "image") {
-          url2 = myBlocState.deviceDetails?.media?[1].type == "video"
-              ? "$endPoint${myBlocState.deviceDetails?.media?[1].file}"
-              : myBlocState.deviceDetails?.media?[1].file;
-          if (myBlocState.deviceDetails?.media?[1].type == "video") {
-            controller2 = WebViewController()
-              ..setJavaScriptMode(JavaScriptMode.unrestricted)
-              ..setBackgroundColor(Colors.white)
-              ..loadRequest(Uri.parse(url2 ?? ''));
-          }
-        }
-      }
+      // if (myBlocState.deviceDetails?.media?[0].type != "image") {
+      //   url1 = myBlocState.deviceDetails?.media?[0].type == "video"
+      //       ? "$endPoint${myBlocState.deviceDetails?.media?[0].file}"
+      //       : myBlocState.deviceDetails?.media?[0].file;
+      //   if (myBlocState.deviceDetails?.media?[0].type == "video") {
+      //     controller = VideoPlayerController.network(
+      //       url1 ?? '',
+      //       videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true),
+      //     );
+      //     controller?.addListener(() {
+      //       setState(() {});
+      //     });
+      //     controller?.setLooping(true);
+      //     controller?.initialize();
+      //   }
+      // }
+      // if (myBlocState.deviceDetails!.deviceDetails!.elements! > 1) {
+      //   if (myBlocState.deviceDetails?.media?[1].type != "image") {
+      //     url2 = myBlocState.deviceDetails?.media?[1].type == "video"
+      //         ? "$endPoint${myBlocState.deviceDetails?.media?[1].file}"
+      //         : myBlocState.deviceDetails?.media?[1].file;
+      //     if (myBlocState.deviceDetails?.media?[1].type == "youtube") {
+      //       // url2 = await getVideoUrl(url2);
+      //     }
+      //     controller2 = VideoPlayerController.network(
+      //       url2 ?? '',
+      //       videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true),
+      //     );
+      //   }
+      // }
 
-      if (myBlocState.deviceDetails!.deviceDetails!.elements! > 2) {
-        if (myBlocState.deviceDetails?.media?[2].type != "image") {
-          url3 = myBlocState.deviceDetails?.media?[2].type == "video"
-              ? "$endPoint${myBlocState.deviceDetails?.media?[2].file}"
-              : myBlocState.deviceDetails?.media?[2].file;
-          if (myBlocState.deviceDetails?.media?[2].type == "video") {
-            controller3 = WebViewController()
-              ..setJavaScriptMode(JavaScriptMode.unrestricted)
-              ..setBackgroundColor(Colors.white)
-              ..loadRequest(Uri.parse(url3 ?? ''));
-          }
-        }
-      }
+      // if (myBlocState.deviceDetails!.deviceDetails!.elements! > 2) {
+      //   if (myBlocState.deviceDetails?.media?[2].type != "image") {
+      //     url3 = myBlocState.deviceDetails?.media?[2].type == "video"
+      //         ? "$endPoint${myBlocState.deviceDetails?.media?[2].file}"
+      //         : myBlocState.deviceDetails?.media?[2].file;
+      //     if (myBlocState.deviceDetails?.media?[2].type == "youtube") {
+      //       // url3 = await getVideoUrl(url3);
+      //     }
+      //     controller3 = VideoPlayerController.network(
+      //       url3 ?? '',
+      //       videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true),
+      //     );
+      //   }
+      // }
 
-      if (myBlocState.deviceDetails!.deviceDetails!.elements! > 3) {
-        log("message");
-        if (myBlocState.deviceDetails?.media?[3].type != "image") {
-          url4 = myBlocState.deviceDetails?.media?[3].type == "video"
-              ? "$endPoint${myBlocState.deviceDetails?.media?[3].file}"
-              : myBlocState.deviceDetails?.media?[3].file;
-          if (myBlocState.deviceDetails?.media?[3].type == "video") {
-            controller4 = WebViewController()
-              ..setJavaScriptMode(JavaScriptMode.unrestricted)
-              ..setBackgroundColor(Colors.white)
-              ..loadRequest(Uri.parse(url4 ?? ''));
-          }
-        }
-      }
+      // if (myBlocState.deviceDetails!.deviceDetails!.elements! > 3) {
+      //   log("message");
+      //   if (myBlocState.deviceDetails?.media?[3].type != "image") {
+      //     url4 = myBlocState.deviceDetails?.media?[3].type == "video"
+      //         ? "$endPoint${myBlocState.deviceDetails?.media?[3].file}"
+      //         : myBlocState.deviceDetails?.media?[3].file;
+      //     if (myBlocState.deviceDetails?.media?[3].type == "youtube") {
+      //       // url4 = await getVideoUrl(url4);
+      //     }
+      //     controller4 = VideoPlayerController.network(
+      //       url4 ?? '',
+      //       videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true),
+      //     );
+      //   }
+      // }
 
       // Do something with these values
 
-      ytcontroller = YoutubePlayerController(
-        initialVideoId: url1 ?? '',
-        flags: const YoutubePlayerFlags(
-          mute: false,
-          autoPlay: true,
-          disableDragSeek: false,
-          loop: true,
-          isLive: false,
-          forceHD: false,
-          enableCaption: true,
-        ),
-      )..addListener(listener);
+      // _videoMetaData = const YoutubeMetaData();
+      // _playerState = PlayerState.unknown;
 
-      _videoMetaData = const YoutubeMetaData();
-      _playerState = PlayerState.unknown;
-
-      ytcontroller2 = YoutubePlayerController(
-        initialVideoId: url2 ?? '',
-        flags: const YoutubePlayerFlags(
-          mute: false,
-          autoPlay: true,
-          disableDragSeek: false,
-          loop: true,
-          isLive: false,
-          forceHD: false,
-          enableCaption: true,
-        ),
-      )..addListener(listener);
-
-      _videoMetaData = const YoutubeMetaData();
-      _playerState = PlayerState.unknown;
-
-      ytcontroller3 = YoutubePlayerController(
-        initialVideoId: url3 ?? '',
-        flags: const YoutubePlayerFlags(
-          mute: false,
-          autoPlay: true,
-          disableDragSeek: false,
-          loop: true,
-          isLive: false,
-          forceHD: false,
-          enableCaption: true,
-        ),
-      )..addListener(listener);
-
-      _videoMetaData = const YoutubeMetaData();
-      _playerState = PlayerState.unknown;
-
-      ytcontroller4 = YoutubePlayerController(
-        initialVideoId: url4 ?? '',
-        flags: const YoutubePlayerFlags(
-          mute: false,
-          autoPlay: true,
-          disableDragSeek: false,
-          loop: true,
-          isLive: false,
-          forceHD: false,
-          enableCaption: true,
-        ),
-      )..addListener(listener);
-      log(url2 ?? '');
-
-      _videoMetaData = const YoutubeMetaData();
-      _playerState = PlayerState.unknown;
+      // _videoMetaData = const YoutubeMetaData();
+      // _playerState = PlayerState.unknown;
     }
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       timer = Timer.periodic(const Duration(seconds: 3), (timer) {
@@ -178,21 +124,9 @@ class _ImageScreenState extends State<ImageScreen> {
     });
   }
 
-  void listener() {
-    if (_isPlayerReady && mounted && !ytcontroller.value.isFullScreen) {
-      setState(() {
-        _playerState = ytcontroller.value.playerState;
-        _videoMetaData = ytcontroller.metadata;
-      });
-    }
-  }
-
   @override
   void dispose() {
-    ytcontroller.dispose();
-    ytcontroller2.dispose();
-    ytcontroller3.dispose();
-    ytcontroller4.dispose();
+    // ytcontroller.dispose();
 
     super.dispose();
   }
@@ -223,16 +157,14 @@ class _ImageScreenState extends State<ImageScreen> {
               ]);
             }
             return buildFourScreens(
-                context,
-                state,
-                controller ?? WebViewController(),
-                controller2 ?? WebViewController(),
-                controller3 ?? WebViewController(),
-                controller4 ?? WebViewController(),
-                ytcontroller,
-                ytcontroller2,
-                ytcontroller3,
-                ytcontroller4);
+              context,
+              state,
+              controller,
+              controller2,
+              controller3,
+              controller4,
+              ytController,
+            );
           } else if (eleCou == 3) {
             if (state.deviceDetails?.deviceDetails?.orientation == 'portrait') {
               SystemChrome.setPreferredOrientations([
@@ -249,9 +181,7 @@ class _ImageScreenState extends State<ImageScreen> {
               controller,
               controller2,
               controller3,
-              ytcontroller,
-              ytcontroller2,
-              ytcontroller3,
+              ytController,
             );
           } else if (eleCou == 2 &&
               state.deviceDetails?.deviceDetails?.orientation == 'portrait') {
@@ -263,8 +193,7 @@ class _ImageScreenState extends State<ImageScreen> {
               state,
               controller,
               controller2,
-              ytcontroller,
-              ytcontroller2,
+              ytController,
             );
           } else if (eleCou == 2 &&
               state.deviceDetails?.deviceDetails?.orientation == 'landscape') {
@@ -276,8 +205,7 @@ class _ImageScreenState extends State<ImageScreen> {
               state,
               controller,
               controller2,
-              ytcontroller,
-              ytcontroller2,
+              ytController,
             );
           } else if (eleCou == 1 &&
               state.deviceDetails?.deviceDetails?.orientation == 'portrait') {
@@ -288,7 +216,7 @@ class _ImageScreenState extends State<ImageScreen> {
               context,
               state,
               controller,
-              ytcontroller,
+              ytController,
             );
           } else if (eleCou == 1 &&
               state.deviceDetails?.deviceDetails?.orientation == 'landscape') {
@@ -299,7 +227,7 @@ class _ImageScreenState extends State<ImageScreen> {
               context,
               state,
               controller,
-              ytcontroller,
+              ytController,
             );
           }
           return buildImage(context);
@@ -360,7 +288,7 @@ Widget buildImage(BuildContext context) {
 // }
 
 Widget buildvideo(
-    BuildContext context, size, WebViewController vlcController, height) {
+    BuildContext context, size, VideoPlayerController controller, height) {
   return Expanded(
     child: ClipRRect(
       borderRadius: BorderRadius.circular(14),
@@ -368,10 +296,12 @@ Widget buildvideo(
         height: height,
         width: size.width,
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(25)),
-        child: WebViewWidget(
-          controller: vlcController,
-
-          // showControls: true,
+        child: Stack(
+          children: [
+            VideoPlayer(controller),
+            ControlsOverlay(controller: controller),
+            VideoProgressIndicator(controller, allowScrubbing: true),
+          ],
         ),
       ),
     ),
