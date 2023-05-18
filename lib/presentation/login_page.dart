@@ -23,24 +23,17 @@ class _LoginPageState extends State<LoginPage> {
     BlocProvider.of<SplashBloc>(context).add(
       FetchLayoutDetails(),
     );
-
-    // BlocProvider.of<SplashBloc>(context).add(
-    //   FetchDeviceId(),
-    // );
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       timer = Timer.periodic(const Duration(seconds: 2), (timer) {
         final myBlocState = context.read<SplashBloc>().state;
         if (myBlocState is SplashLoaded && myBlocState.isDeviceReg == true) {
           timer.cancel();
-          print("return");
+
           return;
         }
-        print("______________");
         BlocProvider.of<SplashBloc>(context).add(
           FetchLayoutDetails(),
         );
-
-        print("Timer");
       });
     });
   }
@@ -49,7 +42,6 @@ class _LoginPageState extends State<LoginPage> {
   void dispose() {
     super.dispose();
     timer?.cancel();
-    print("dispose");
   }
 
   @override
@@ -103,24 +95,37 @@ class _LoginPageState extends State<LoginPage> {
                     if (state is SplashLoaded && state.isDeviceReg == true) {
                       Navigator.pushReplacement(context,
                           MaterialPageRoute(builder: (ctx) {
-                        return const ImageScreen();
+                        return const PresentationScreen();
                       }));
                       // timer?.cancel();
                     }
                   },
                   builder: (context, state) {
                     if (state is SplashLoaded) {
+                      print(state.deviceDetails);
                       return Container(
                         // width: size.width * .17,
-                        height: 30,
+                        // height: 50,
                         decoration: BoxDecoration(
                             color: Colors.transparent,
                             borderRadius: BorderRadius.circular(10)),
                         child: Center(
-                          child: Text(
-                            "Device Id : ${state.deviceId}",
-                            style: getSemiBoldStyle(
-                                color: Colors.white, fontSize: 13),
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 5),
+                                child: Text(
+                                  state.message ?? '',
+                                  style: getMediumtStyle(
+                                      color: Colors.white, fontSize: 13),
+                                ),
+                              ),
+                              Text(
+                                "Device Id : ${state.deviceId}",
+                                style: getSemiBoldStyle(
+                                    color: Colors.white, fontSize: 13),
+                              ),
+                            ],
                           ),
                         ),
                       );

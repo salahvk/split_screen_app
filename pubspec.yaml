@@ -53,6 +53,8 @@ dependencies:
   # flutter_vlc_player: ^7.2.0
   youtube_explode_dart: ^1.12.4
   video_player: ^2.6.1
+  carousel_slider: ^4.2.1
+  # fan_carousel_image_slider: ^0.1.2
 
 
 dev_dependencies:

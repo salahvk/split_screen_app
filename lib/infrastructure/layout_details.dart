@@ -7,7 +7,8 @@ import 'package:injectable/injectable.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:split_screen_app/domain/core/api_endPoint.dart';
-import 'package:split_screen_app/domain/device_layout_details/device_layout_details.dart';
+import 'package:split_screen_app/domain/device_layout_details/device_layout.dart';
+
 import 'package:split_screen_app/domain/failures/main_failures.dart';
 import 'package:split_screen_app/domain/layout_services.dart';
 

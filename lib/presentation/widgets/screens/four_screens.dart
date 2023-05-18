@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:split_screen_app/application/bloc/splash_bloc.dart';
-import 'package:split_screen_app/presentation/presentaion_screen.dart';
+import 'package:split_screen_app/presentation/widgets/build_one_image.dart';
+import 'package:split_screen_app/presentation/widgets/build_video.dart';
+import 'package:split_screen_app/presentation/widgets/build_youtube.dart';
+import 'package:split_screen_app/presentation/widgets/carousel_build.dart';
 
 Widget buildFourScreens(
   BuildContext context,
@@ -29,20 +32,31 @@ Widget buildFourScreens(
                         : state.deviceDetails?.media?[0].type == 'video'
                             ? buildvideo(
                                 context, size, vlcontroller, size.height * .42)
-                            : Container(),
-
-                // state.deviceDetails?.media?[0].type != 'image'
-                //     ? buildvideo(context, size, controller, size.height * .42)
-                //     : state.deviceDetails?.media?[0].type == 'image'
-                //         ? buildOneImage(size, state, 0, size.height * .42)
-                //         : Container(),
+                            : state.deviceDetails?.media?[0].type == 'carousel'
+                                ? CarouselSlider1(
+                                    size: size.width,
+                                    height: size.height * .42,
+                                    imageList: state.deviceDetails!.media![0]
+                                        .carouselImages!,
+                                    dur: state.deviceDetails!.media![0]
+                                            .timeInterval ??
+                                        500)
+                                : Container(),
                 const SizedBox(
                   width: 5,
                 ),
                 state.deviceDetails?.media?[1].type == 'image'
                     ? buildOneImage(size, state, 1, size.height * .42)
-                    : buildvideo(
-                        context, size, vlcontroller2, size.height * .42)
+                    : state.deviceDetails?.media?[1].type == 'carousel'
+                        ? CarouselSlider1(
+                            size: size.width,
+                            height: size.height * .42,
+                            imageList:
+                                state.deviceDetails!.media![1].carouselImages!,
+                            dur: state.deviceDetails!.media![1].timeInterval ??
+                                800)
+                        : buildvideo(
+                            context, size, vlcontroller2, size.height * .42)
               ],
             ),
             const SizedBox(
@@ -52,15 +66,31 @@ Widget buildFourScreens(
               children: [
                 state.deviceDetails?.media?[2].type == 'image'
                     ? buildOneImage(size, state, 2, size.height * .42)
-                    : buildvideo(
-                        context, size, vlcontroller3, size.height * .42),
+                    : state.deviceDetails?.media?[2].type == 'carousel'
+                        ? CarouselSlider1(
+                            size: size.width,
+                            height: size.height * .42,
+                            imageList:
+                                state.deviceDetails!.media![2].carouselImages!,
+                            dur: state.deviceDetails!.media![2].timeInterval ??
+                                800)
+                        : buildvideo(
+                            context, size, vlcontroller3, size.height * .42),
                 const SizedBox(
                   width: 5,
                 ),
                 state.deviceDetails?.media?[3].type == 'image'
                     ? buildOneImage(size, state, 3, size.height * .42)
-                    : buildvideo(
-                        context, size, vlcontroller4, size.height * .42)
+                    : state.deviceDetails?.media?[3].type == 'carousel'
+                        ? CarouselSlider1(
+                            size: size.width,
+                            height: size.height * .42,
+                            imageList:
+                                state.deviceDetails!.media![3].carouselImages!,
+                            dur: state.deviceDetails!.media![3].timeInterval ??
+                                800)
+                        : buildvideo(
+                            context, size, vlcontroller4, size.height * .42)
               ],
             ),
           ],

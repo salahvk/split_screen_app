@@ -26,23 +26,16 @@ class _LandingScreenState extends State<LandingScreen> {
     return Scaffold(
       body: BlocListener<SplashBloc, SplashState>(
         listener: (context, state) {
-          print("object");
           if (state is SplashLoaded && state.isDeviceReg == false) {
             Navigator.pushReplacement(context,
                 MaterialPageRoute(builder: (ctx) {
               return const LoginPage();
             }));
           } else if (state is SplashLoaded && state.isDeviceReg == true) {
-            print("hi");
             Navigator.pushReplacement(context,
                 MaterialPageRoute(builder: (ctx) {
-              return const ImageScreen();
+              return const PresentationScreen();
             }));
-            // BlocProvider.of<SplashBloc>(context).add(
-            //   FetchLayoutDetails(),
-            // );
-            print("fetching");
-            //! include is splash boolean to avoid an extra api call
           }
         },
         child: Stack(

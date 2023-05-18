@@ -1,7 +1,7 @@
 import 'package:split_screen_app/core/controllers/controllers.dart';
 import 'package:split_screen_app/core/utils/change_url.dart';
 import 'package:split_screen_app/domain/core/api_endPoint.dart';
-import 'package:split_screen_app/domain/device_layout_details/device_layout_details.dart';
+import 'package:split_screen_app/domain/device_layout_details/device_layout.dart';
 import 'package:video_player/video_player.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
