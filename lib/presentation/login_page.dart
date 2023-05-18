@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive/hive.dart';
 import 'package:split_screen_app/application/bloc/splash_bloc.dart';
 import 'package:split_screen_app/core/styles_manager.dart';
 import 'package:split_screen_app/presentation/presentaion_screen.dart';
@@ -20,6 +21,7 @@ class _LoginPageState extends State<LoginPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    deviceId = Hive.box("device_id").get('id');
     BlocProvider.of<SplashBloc>(context).add(
       FetchLayoutDetails(),
     );
@@ -102,7 +104,6 @@ class _LoginPageState extends State<LoginPage> {
                   },
                   builder: (context, state) {
                     if (state is SplashLoaded) {
-                      print(state.deviceDetails);
                       return Container(
                         // width: size.width * .17,
                         // height: 50,
@@ -121,7 +122,7 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                               ),
                               Text(
-                                "Device Id : ${state.deviceId}",
+                                "Device Id : ${state.deviceId ?? deviceId}",
                                 style: getSemiBoldStyle(
                                     color: Colors.white, fontSize: 13),
                               ),

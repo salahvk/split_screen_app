@@ -3,8 +3,11 @@ import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
 import 'package:meta/meta.dart';
+import 'package:platform_device_id/platform_device_id.dart';
 import 'package:split_screen_app/core/utils/set_controllers.dart';
 import 'package:split_screen_app/domain/core/api_endPoint.dart';
 import 'package:http/http.dart' as http;
@@ -12,7 +15,6 @@ import 'package:split_screen_app/domain/device_layout_details/device_layout.dart
 import 'package:split_screen_app/domain/failures/main_failures.dart';
 import 'package:split_screen_app/infrastructure/last_device_id.dart';
 import 'package:split_screen_app/infrastructure/layout_details.dart';
-import 'package:platform_device_id/platform_device_id.dart';
 
 part 'splash_event.dart';
 part 'splash_state.dart';
@@ -24,16 +26,25 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
         String? deviceId;
         emit(SplashLoading());
         await Future.delayed(const Duration(seconds: 3));
-        final box = Hive.box('device_id');
-        deviceId = await PlatformDeviceId.getDeviceId;
-        Hive.box("device_id").put('id', deviceId);
-        if (deviceId == null || deviceId.isEmpty) {
-          if (box.isEmpty) {
-            deviceId = await getLastDeviceId();
-            Hive.box("device_id").put('id', deviceId);
+
+        try {
+          final box = Hive.box('device_id');
+          deviceId = await PlatformDeviceId.getDeviceId;
+          if (deviceId == null || deviceId.isEmpty) {
+            Hive.box("device_id").clear();
+
+            if (box.isEmpty) {
+              deviceId = await getLastDeviceId();
+              Hive.box("device_id").put('id', deviceId);
+            } else {
+              deviceId = Hive.box("device_id").get('id');
+            }
           } else {
-            deviceId = Hive.box("device_id").get('id');
+            Hive.box("device_id").put('id', deviceId);
           }
+        } on PlatformException {
+          deviceId = await getLastDeviceId();
+          Hive.box("device_id").put('id', deviceId);
         }
 
         Either<MainFailure, DeviceLayoutDetails> result =
@@ -71,18 +82,27 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
           DeviceLayoutDetails deviceDetailsModel =
               result.getOrElse(() => DeviceLayoutDetails());
           String? deviceId;
-          final box = Hive.box('device_id');
+          try {
+            final box = Hive.box('device_id');
+            deviceId = await PlatformDeviceId.getDeviceId;
 
-          deviceId = await PlatformDeviceId.getDeviceId;
-          Hive.box("device_id").put('id', deviceId);
-          if (deviceId == null || deviceId.isEmpty) {
-            if (box.isEmpty) {
-              deviceId = await getLastDeviceId();
-              Hive.box("device_id").put('id', deviceId);
+            if (deviceId == null || deviceId.isEmpty) {
+              Hive.box("device_id").clear();
+
+              if (box.isEmpty) {
+                deviceId = await getLastDeviceId();
+                Hive.box("device_id").put('id', deviceId);
+              } else {
+                deviceId = Hive.box("device_id").get('id');
+              }
             } else {
-              deviceId = Hive.box("device_id").get('id');
+              Hive.box("device_id").put('id', deviceId);
             }
+          } on PlatformException {
+            deviceId = await getLastDeviceId();
+            Hive.box("device_id").put('id', deviceId);
           }
+
           await Future.delayed(const Duration(seconds: 3));
 
           final updatedTime = deviceDetailsModel.deviceDetails?.layoutUpdatedAt;
@@ -100,6 +120,7 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
       },
     );
     on<FetchLayoutModify>((event, emit) async {
+      String deviceId = Hive.box("device_id").get('id');
       String updatedAt = Hive.box("updated_at").get('time');
       final url1 = "${ApiEndPoint.layoutDetails}&updated_time=$updatedAt";
       final url = Uri.parse(url1);

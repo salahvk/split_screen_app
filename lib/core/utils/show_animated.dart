@@ -1,0 +1,12 @@
+import 'package:animated_snack_bar/animated_snack_bar.dart';
+import 'package:flutter/cupertino.dart';
+
+showAnimatedSnackBar(BuildContext context, String text, {type}) {
+  AnimatedSnackBar.material(text,
+          type: AnimatedSnackBarType.error,
+          borderRadius: BorderRadius.circular(6),
+          duration: const Duration(seconds: 10))
+      .show(
+    context,
+  );
+}

@@ -1,8 +1,7 @@
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:split_screen_app/application/bloc/splash_bloc.dart';
 import 'package:split_screen_app/domain/core/api_endPoint.dart';
+import 'package:split_screen_app/presentation/widgets/carousel_build.dart';
 import 'package:video_player/video_player.dart';
 
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
@@ -19,11 +18,12 @@ Widget buildOneScreen(
             : state.deviceDetails?.media?[0].type == 'video'
                 ? buildvid(context, size, controller, size.height)
                 : state.deviceDetails?.media?[0].type == 'carousel'
-                    ? buildCarousel2(
-                        size,
-                        size.height,
-                        state.deviceDetails!.media![0].carouselImages!,
-                        state.deviceDetails!.media![0].timeInterval)
+                    ? CarouselSlider2(
+                        size: size.width,
+                        height: size.height,
+                        imageList:
+                            state.deviceDetails!.media![0].carouselImages!,
+                        dur: state.deviceDetails!.media![0].timeInterval ?? 800)
                     : Container(),
   );
 }
@@ -72,35 +72,37 @@ Widget buildOneYtbvideo(BuildContext context, size, ytcontroller, height) {
   );
 }
 
-Widget buildCarousel2(size, height, List<String> imageList, dur) {
-// Use map method to add the string to every value in the list
-  List<String> modifiedList =
-      imageList.map((item) => "$endPoint$item").toList();
+// Widget buildCarousel2(size, height, List<String> imageList, dur) {
+// // Use map method to add the string to every value in the list
+//   List<String> modifiedList =
+//       imageList.map((item) => "$endPoint$item").toList();
 
-// Output the modified list
-  print(modifiedList); // Output: [apple fruit, banana fruit, orange fruit]
+// // Output the modified list
+//   print(modifiedList); // Output: [apple fruit, banana fruit, orange fruit]
 
-  return ClipRRect(
-      borderRadius: BorderRadius.circular(14),
-      child: CarouselSlider.builder(
-        options: CarouselOptions(
-          height: height,
-          // aspectRatio: 16 / 9,
-          viewportFraction: 0.8,
-          initialPage: 0,
-          enableInfiniteScroll: true,
-          reverse: false,
-          autoPlay: true,
-          autoPlayInterval: Duration(milliseconds: dur),
-          autoPlayAnimationDuration: const Duration(milliseconds: 800),
-          autoPlayCurve: Curves.fastOutSlowIn,
-          enlargeCenterPage: true,
-          enlargeFactor: 0.3,
-          scrollDirection: Axis.horizontal,
-        ),
-        itemCount: modifiedList.length,
-        itemBuilder: (BuildContext context, int itemIndex, int pageViewIndex) =>
-            CachedNetworkImage(
-                imageUrl: modifiedList[itemIndex], fit: BoxFit.cover),
-      ));
-}
+//   return ClipRRect(
+//       borderRadius: BorderRadius.circular(14),
+//       child: CarouselSlider.builder(
+//           options: CarouselOptions(
+//             height: height,
+//             // aspectRatio: 16 / 9,
+//             viewportFraction: 1,
+//             initialPage: 0,
+//             enableInfiniteScroll: true,
+//             reverse: false,
+//             autoPlay: true,
+//             autoPlayInterval: Duration(milliseconds: dur),
+//             autoPlayAnimationDuration: const Duration(milliseconds: 800),
+//             autoPlayCurve: Curves.fastOutSlowIn,
+//             enlargeCenterPage: true,
+//             enlargeFactor: 0.3,
+//             scrollDirection: Axis.vertical,
+//           ),
+//           itemCount: modifiedList.length,
+//           itemBuilder:
+//               (BuildContext context, int itemIndex, int pageViewIndex) {
+//             print(itemIndex);
+//             return CachedNetworkImage(
+//                 imageUrl: modifiedList[itemIndex], fit: BoxFit.cover);
+//           }));
+// }
