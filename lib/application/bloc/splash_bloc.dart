@@ -86,18 +86,18 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
             final box = Hive.box('device_id');
             deviceId = await PlatformDeviceId.getDeviceId;
 
-            if (deviceId == null || deviceId.isEmpty) {
-              Hive.box("device_id").clear();
+            // if (deviceId == null || deviceId.isEmpty) {
+            //   Hive.box("device_id").clear();
 
-              if (box.isEmpty) {
-                deviceId = await getLastDeviceId();
-                Hive.box("device_id").put('id', deviceId);
-              } else {
-                deviceId = Hive.box("device_id").get('id');
-              }
-            } else {
-              Hive.box("device_id").put('id', deviceId);
-            }
+            // if (box.isEmpty) {
+            //   deviceId = await getLastDeviceId();
+            //   Hive.box("device_id").put('id', deviceId);
+            // } else {
+            //   deviceId = Hive.box("device_id").get('id');
+            // }
+            // } else {
+            await Hive.box("device_id").put('id', deviceId);
+            // }
           } on PlatformException {
             deviceId = await getLastDeviceId();
             Hive.box("device_id").put('id', deviceId);
