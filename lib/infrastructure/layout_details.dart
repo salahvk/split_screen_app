@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:dartz/dartz.dart';
-
+import 'dart:io';
 import 'package:injectable/injectable.dart';
 
 import 'package:http/http.dart' as http;
@@ -17,18 +17,22 @@ class LayoutImp implements LayoutServices {
   @override
   Future<Either<MainFailure, DeviceLayoutDetails>> getLayoutDetails() async {
     try {
-      final url = Uri.parse(ApiEndPoint.layoutDetails);
-      final headers = {'Content-Type': 'application/json'};
-      final response = await http.post(
-        url,
-        headers: headers,
-      );
+      final httpClient = HttpClient();
+      httpClient.badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
 
-      //  log(response.data.toString());
-      var jsonResponse = jsonDecode(response.body);
+      final url = Uri.parse(ApiEndPoint.layoutDetails);
+      final request = await httpClient.postUrl(url);
+      final response = await request.close();
+      final responseBody = await response.transform(utf8.decoder).join();
+      HttpOverrides.global = CustomHttpOverrides();
+
+      httpClient.close();
+
+      var jsonResponse = jsonDecode(responseBody);
       if (response.statusCode == 200 || response.statusCode == 201) {
         final result = DeviceLayoutDetails.fromJson(jsonResponse);
-        log(response.body);
+        log(responseBody);
         return Right(result);
       } else {
         return const Left(MainFailure.serverFailure());
@@ -44,5 +48,14 @@ class LayoutImp implements LayoutServices {
       log(e.toString());
       return const Left(MainFailure.clientFailure());
     }
+  }
+}
+
+class CustomHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
   }
 }

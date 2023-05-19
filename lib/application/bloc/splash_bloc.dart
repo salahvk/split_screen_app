@@ -13,7 +13,6 @@ import 'package:split_screen_app/domain/core/api_endPoint.dart';
 import 'package:http/http.dart' as http;
 import 'package:split_screen_app/domain/device_layout_details/device_layout.dart';
 import 'package:split_screen_app/domain/failures/main_failures.dart';
-import 'package:split_screen_app/infrastructure/last_device_id.dart';
 import 'package:split_screen_app/infrastructure/layout_details.dart';
 
 part 'splash_event.dart';
@@ -28,23 +27,12 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
         await Future.delayed(const Duration(seconds: 3));
 
         try {
-          final box = Hive.box('device_id');
           deviceId = await PlatformDeviceId.getDeviceId;
-          if (deviceId == null || deviceId.isEmpty) {
-            Hive.box("device_id").clear();
-
-            if (box.isEmpty) {
-              deviceId = await getLastDeviceId();
-              Hive.box("device_id").put('id', deviceId);
-            } else {
-              deviceId = Hive.box("device_id").get('id');
-            }
-          } else {
-            Hive.box("device_id").put('id', deviceId);
-          }
+          await Hive.box("device_id").put('id', deviceId);
+          print(deviceId);
         } on PlatformException {
-          deviceId = await getLastDeviceId();
-          Hive.box("device_id").put('id', deviceId);
+          // deviceId = await getLastDeviceId();
+          // Hive.box("device_id").put('id', deviceId);
         }
 
         Either<MainFailure, DeviceLayoutDetails> result =
@@ -83,24 +71,12 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
               result.getOrElse(() => DeviceLayoutDetails());
           String? deviceId;
           try {
-            final box = Hive.box('device_id');
             deviceId = await PlatformDeviceId.getDeviceId;
 
-            // if (deviceId == null || deviceId.isEmpty) {
-            //   Hive.box("device_id").clear();
-
-            // if (box.isEmpty) {
-            //   deviceId = await getLastDeviceId();
-            //   Hive.box("device_id").put('id', deviceId);
-            // } else {
-            //   deviceId = Hive.box("device_id").get('id');
-            // }
-            // } else {
             await Hive.box("device_id").put('id', deviceId);
-            // }
           } on PlatformException {
-            deviceId = await getLastDeviceId();
-            Hive.box("device_id").put('id', deviceId);
+            // deviceId = await getLastDeviceId();
+            // Hive.box("device_id").put('id', deviceId);
           }
 
           await Future.delayed(const Duration(seconds: 3));

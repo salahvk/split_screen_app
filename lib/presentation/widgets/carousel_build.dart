@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:split_screen_app/domain/core/api_endPoint.dart';
 
@@ -258,8 +259,8 @@ class _CarouselSlider2State extends State<CarouselSlider2> {
 
             return SizedBox(
               width: MediaQuery.of(context).size.width,
-              child: Image.network(
-                modifiedList?[imageIndex] ?? '',
+              child: CachedNetworkImage(
+                imageUrl: modifiedList?[imageIndex] ?? '',
                 fit: BoxFit.cover,
               ),
             );
