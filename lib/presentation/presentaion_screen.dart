@@ -29,6 +29,27 @@ class _PresentationScreenState extends State<PresentationScreen> {
         );
       });
     });
+
+    // motionSensors.isOrientationAvailable().then((available) {
+    //   if (available) {
+    //     motionSensors.orientation.listen((OrientationEvent event) {
+    //       print(degrees(_orientation.x).toInt());
+    //       if (degrees(_orientation.x).toInt() < 50 &&
+    //           degrees(_orientation.x).toInt() > -50) {
+    //         SystemChrome.setPreferredOrientations([
+    //           DeviceOrientation.portraitUp,
+    //         ]);
+    //       } else {
+    //         SystemChrome.setPreferredOrientations([
+    //           DeviceOrientation.landscapeLeft,
+    //         ]);
+    //       }
+    //       setState(() {
+    //         _orientation.setValues(event.yaw, event.pitch, event.roll);
+    //       });
+    //     });
+    //   }
+    // });
   }
 
   @override
@@ -51,16 +72,32 @@ class _PresentationScreenState extends State<PresentationScreen> {
         if (state is SplashLoaded) {
           final eleCou = state.deviceDetails?.deviceDetails?.elements;
 
-          if (eleCou == 4) {
-            if (state.deviceDetails?.deviceDetails?.orientation == 'portrait') {
-              SystemChrome.setPreferredOrientations([
-                DeviceOrientation.portraitUp,
-              ]);
-            } else {
-              SystemChrome.setPreferredOrientations([
-                DeviceOrientation.landscapeLeft,
-              ]);
-            }
+          if (eleCou == 4 &&
+              state.deviceDetails?.deviceDetails?.orientation == 'portrait') {
+            SystemChrome.setPreferredOrientations([
+              DeviceOrientation.portraitUp,
+            ]);
+            bool isPortraitModeSupported =
+                MediaQuery.of(context).orientation == Orientation.portrait;
+
+            return Transform.rotate(
+              angle: isPortraitModeSupported ? 0 : 90 * 3.1415927 / 180,
+              child: buildFourScreens(
+                context,
+                state,
+                controller,
+                controller2,
+                controller3,
+                controller4,
+                ytController,
+              ),
+            );
+          } else if (eleCou == 4 &&
+              state.deviceDetails?.deviceDetails?.orientation == 'landscape') {
+            SystemChrome.setPreferredOrientations([
+              DeviceOrientation.landscapeLeft,
+            ]);
+
             return buildFourScreens(
               context,
               state,
@@ -70,16 +107,31 @@ class _PresentationScreenState extends State<PresentationScreen> {
               controller4,
               ytController,
             );
-          } else if (eleCou == 3) {
-            if (state.deviceDetails?.deviceDetails?.orientation == 'portrait') {
-              SystemChrome.setPreferredOrientations([
-                DeviceOrientation.portraitUp,
-              ]);
-            } else {
-              SystemChrome.setPreferredOrientations([
-                DeviceOrientation.landscapeLeft,
-              ]);
-            }
+          } else if (eleCou == 3 &&
+              state.deviceDetails?.deviceDetails?.orientation == 'portrait') {
+            SystemChrome.setPreferredOrientations([
+              DeviceOrientation.portraitUp,
+            ]);
+            bool isPortraitModeSupported =
+                MediaQuery.of(context).orientation == Orientation.portrait;
+
+            return Transform.rotate(
+              angle: isPortraitModeSupported ? 0 : 90 * 3.1415927 / 180,
+              child: buildThreeScreens(
+                context,
+                state,
+                controller,
+                controller2,
+                controller3,
+                ytController,
+              ),
+            );
+          } else if (eleCou == 3 &&
+              state.deviceDetails?.deviceDetails?.orientation == 'landscape') {
+            SystemChrome.setPreferredOrientations([
+              DeviceOrientation.landscapeLeft,
+            ]);
+
             return buildThreeScreens(
               context,
               state,
@@ -93,12 +145,17 @@ class _PresentationScreenState extends State<PresentationScreen> {
             SystemChrome.setPreferredOrientations([
               DeviceOrientation.portraitUp,
             ]);
-            return buildTwoScreensPor(
-              context,
-              state,
-              controller,
-              controller2,
-              ytController,
+            bool isPortraitModeSupported =
+                MediaQuery.of(context).orientation == Orientation.portrait;
+            return Transform.rotate(
+              angle: isPortraitModeSupported ? 0 : 90 * 3.1415927 / 180,
+              child: buildTwoScreensPor(
+                context,
+                state,
+                controller,
+                controller2,
+                ytController,
+              ),
             );
           } else if (eleCou == 2 &&
               state.deviceDetails?.deviceDetails?.orientation == 'landscape') {
@@ -117,11 +174,18 @@ class _PresentationScreenState extends State<PresentationScreen> {
             SystemChrome.setPreferredOrientations([
               DeviceOrientation.portraitUp,
             ]);
-            return buildOneScreen(
-              context,
-              state,
-              controller,
-              ytController,
+            bool isPortraitModeSupported =
+                MediaQuery.of(context).orientation == Orientation.portrait;
+            // SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
+
+            return Transform.rotate(
+              angle: isPortraitModeSupported ? 0 : 90 * 3.1415927 / 180,
+              child: buildOneScreen(
+                context,
+                state,
+                controller,
+                ytController,
+              ),
             );
           } else if (eleCou == 1 &&
               state.deviceDetails?.deviceDetails?.orientation == 'landscape') {
@@ -148,7 +212,7 @@ Widget buildImage(BuildContext context) {
   return Scaffold(
     body: Image.asset(
       'assets/image.png',
-      fit: BoxFit.fitWidth,
+      fit: BoxFit.cover,
       width: size.width,
       height: size.height,
     ),

@@ -23,7 +23,8 @@ Widget buildOneScreen(
                         height: size.height,
                         imageList:
                             state.deviceDetails!.media![0].carouselImages!,
-                        dur: state.deviceDetails!.media![0].timeInterval ?? 800)
+                        dur: state.deviceDetails!.media![0].timeInterval ?? 800,
+                        ani: state.deviceDetails!.media![0].animation)
                     : Container(),
   );
 }
@@ -31,7 +32,7 @@ Widget buildOneScreen(
 Widget buildImage(size, state, index, height) {
   return Image.network(
     "$endPoint${state.deviceDetails?.media?[index].file}",
-    fit: BoxFit.fill,
+    fit: BoxFit.cover,
     width: size.width,
     height: height,
   );

@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:split_screen_app/domain/core/api_endPoint.dart';
 
@@ -7,14 +6,15 @@ class CarouselSlider1 extends StatefulWidget {
   final double height;
   final List<String> imageList;
   final int dur;
-
-  const CarouselSlider1({
-    Key? key,
-    required this.size,
-    required this.height,
-    required this.imageList,
-    required this.dur,
-  }) : super(key: key);
+  var ani;
+  CarouselSlider1(
+      {Key? key,
+      required this.size,
+      required this.height,
+      required this.imageList,
+      required this.dur,
+      required this.ani})
+      : super(key: key);
 
   @override
   State<CarouselSlider1> createState() => _CarouselSlider1State();
@@ -24,11 +24,26 @@ class _CarouselSlider1State extends State<CarouselSlider1> {
   List<String>? modifiedList;
   PageController _pageController = PageController(initialPage: 1);
   int _currentPage = 1;
+  Curve curve = Curves.ease;
 
   @override
   void initState() {
     super.initState();
     modifiedList = widget.imageList.map((item) => "$endPoint$item").toList();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      setState(() {
+        if (widget.ani == 'ease-in') {
+          curve = Curves.ease;
+        } else if (widget.ani == 'ease-out') {
+          curve = Curves.easeOut;
+        } else if (widget.ani == 'linear') {
+          curve = Curves.linear;
+        } else {
+          curve = Curves.ease;
+          print("ease");
+        }
+      });
+    });
 
     _pageController = PageController(initialPage: _currentPage);
     _startAutoPlay();
@@ -37,15 +52,16 @@ class _CarouselSlider1State extends State<CarouselSlider1> {
   @override
   void dispose() {
     _stopAutoPlay();
-    _pageController.dispose();
+
     super.dispose();
   }
 
   void _startAutoPlay() {
     Future.delayed(const Duration(seconds: 2)).then((_) {
+      print(_currentPage);
       _pageController.nextPage(
         duration: const Duration(milliseconds: 500),
-        curve: Curves.ease,
+        curve: curve,
       );
     });
   }
@@ -64,6 +80,7 @@ class _CarouselSlider1State extends State<CarouselSlider1> {
       print(index);
       _pageController.jumpToPage(
         1,
+        // duration: const Duration(milliseconds: 500), curve: curve
       );
     } else if (index == 0) {
       // Reached the beginning, go to the last item
@@ -78,28 +95,31 @@ class _CarouselSlider1State extends State<CarouselSlider1> {
     // Use map method to add the string to every value in the list
 
     return Expanded(
-      child: ClipRRect(
-          borderRadius: BorderRadius.circular(14),
-          child: PageView.builder(
-            scrollDirection: Axis.horizontal,
-            controller: _pageController,
-            onPageChanged: _onPageChanged,
-            itemBuilder: (BuildContext context, int index) {
-              final int imageIndex = index == 0
-                  ? widget.imageList.length - 1
-                  : index == widget.imageList.length + 1
-                      ? 0
-                      : index - 1;
+      child: SizedBox(
+        width: widget.size,
+        height: widget.height,
+        child: ClipRRect(
+            borderRadius: BorderRadius.circular(14),
+            child: PageView.builder(
+              scrollDirection: Axis.horizontal,
+              controller: _pageController,
+              onPageChanged: _onPageChanged,
+              itemBuilder: (BuildContext context, int index) {
+                final int imageIndex = index == 0
+                    ? widget.imageList.length - 1
+                    : index == widget.imageList.length + 1
+                        ? 0
+                        : index - 1;
 
-              return SizedBox(
-                width: MediaQuery.of(context).size.width,
-                child: Image.network(
-                  modifiedList?[imageIndex] ?? '',
-                  fit: BoxFit.cover,
-                ),
-              );
-            },
-          )),
+                return SizedBox(
+                  child: Image.network(
+                    modifiedList?[imageIndex] ?? '',
+                    fit: BoxFit.cover,
+                  ),
+                );
+              },
+            )),
+      ),
     );
   }
 }
@@ -174,9 +194,11 @@ class CarouselSlider2 extends StatefulWidget {
   final double height;
   final List<String> imageList;
   final int dur;
+  var ani;
 
-  const CarouselSlider2({
+  CarouselSlider2({
     Key? key,
+    required this.ani,
     required this.size,
     required this.height,
     required this.imageList,
@@ -191,12 +213,25 @@ class _CarouselSlider2State extends State<CarouselSlider2> {
   List<String>? modifiedList;
   PageController _pageController = PageController(initialPage: 1);
   int _currentPage = 1;
-
+  Curve curve = Curves.ease;
   @override
   void initState() {
     super.initState();
     modifiedList = widget.imageList.map((item) => "$endPoint$item").toList();
-
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      setState(() {
+        if (widget.ani == 'ease-in') {
+          curve = Curves.ease;
+        } else if (widget.ani == 'ease-out') {
+          curve = Curves.easeOut;
+        } else if (widget.ani == 'linear') {
+          curve = Curves.linear;
+        } else {
+          curve = Curves.ease;
+          print("ease");
+        }
+      });
+    });
     _pageController = PageController(initialPage: _currentPage);
     _startAutoPlay();
   }
@@ -204,15 +239,15 @@ class _CarouselSlider2State extends State<CarouselSlider2> {
   @override
   void dispose() {
     _stopAutoPlay();
-    _pageController.dispose();
+    // _pageController.dispose();
     super.dispose();
   }
 
   void _startAutoPlay() {
     Future.delayed(const Duration(seconds: 2)).then((_) {
       _pageController.nextPage(
-        duration: const Duration(milliseconds: 500),
-        curve: Curves.ease,
+        duration: Duration(microseconds: widget.dur),
+        curve: curve,
       );
     });
   }
@@ -259,8 +294,8 @@ class _CarouselSlider2State extends State<CarouselSlider2> {
 
             return SizedBox(
               width: MediaQuery.of(context).size.width,
-              child: CachedNetworkImage(
-                imageUrl: modifiedList?[imageIndex] ?? '',
+              child: Image.network(
+                modifiedList?[imageIndex] ?? '',
                 fit: BoxFit.cover,
               ),
             );

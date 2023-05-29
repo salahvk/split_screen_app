@@ -17,66 +17,62 @@ Widget buildThreeScreens(
   return Scaffold(
     backgroundColor: Colors.black,
     body: SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Row(
-          children: [
-            state.deviceDetails?.media?[0].type == 'image'
-                ? buildOneImage(size, state, 0, size.height * .9)
-                : state.deviceDetails?.media?[0].type == 'youtube'
-                    ? buildYtbvideo(
-                        context, size, ytController, size.height * .9)
-                    : state.deviceDetails?.media?[0].type == 'video'
-                        ? buildvideo(
-                            context, size, controller, size.height * .9)
-                        : state.deviceDetails?.media?[0].type == 'carousel'
-                            ? CarouselSlider1(
-                                size: size.width,
-                                height: size.height * .9,
-                                imageList: state
-                                    .deviceDetails!.media![0].carouselImages!,
-                                dur: state.deviceDetails!.media![0]
-                                        .timeInterval ??
-                                    800)
-                            : Container(),
-            // state.deviceDetails?.media?[0].type != 'image'
-            //     ? buildvideo(context, size, controller, size.height * .9)
-            //     : state.deviceDetails?.media?[0].type == 'image'
-            //         ? buildOneImage(size, state, 0, size.height * .9)
-            //         : Container(),
-            const SizedBox(
-              width: 5,
-            ),
-            state.deviceDetails?.media?[1].type == 'image'
-                ? buildOneImage(size, state, 1, size.height * .9)
-                : state.deviceDetails?.media?[1].type == 'carousel'
-                    ? CarouselSlider1(
-                        size: size.width,
-                        height: size.height * .9,
-                        imageList:
-                            state.deviceDetails!.media![1].carouselImages!,
-                        dur: state.deviceDetails!.media![1].timeInterval ?? 800)
-                    : buildvideo(context, size, controller2, size.height * .9),
-            // state.deviceDetails?.media?[1].type != 'image'
-            //     ? buildvideo(context, size, controller2, size.height * .9)
-            //     : state.deviceDetails?.media?[1].type == 'image'
-            //         ? buildOneImage(size, state, 1, size.height * .9)
-            //         : Container(),
-            const SizedBox(
-              width: 5,
-            ),
-            state.deviceDetails?.media?[2].type == 'image'
-                ? buildOneImage(size, state, 2, size.height * .9)
-                : state.deviceDetails?.media?[2].type == 'carousel'
-                    ? CarouselSlider1(
-                        size: size.width,
-                        height: size.height * .9,
-                        imageList:
-                            state.deviceDetails!.media![2].carouselImages!,
-                        dur: state.deviceDetails!.media![2].timeInterval ?? 800)
-                    : buildvideo(context, size, controller3, size.height * .9),
-          ],
-        ),
+      child: Row(
+        children: [
+          state.deviceDetails?.media?[0].type == 'image'
+              ? buildOneImage(size, state, 0, size.height)
+              : state.deviceDetails?.media?[0].type == 'youtube'
+                  ? buildYtbvideo(context, size, ytController, size.height)
+                  : state.deviceDetails?.media?[0].type == 'video'
+                      ? buildvideo(context, size, controller, size.height)
+                      : state.deviceDetails?.media?[0].type == 'carousel'
+                          ? CarouselSlider1(
+                              ani: state.deviceDetails!.media![0].animation,
+                              size: size.width,
+                              height: size.height,
+                              imageList: state
+                                  .deviceDetails!.media![0].carouselImages!,
+                              dur:
+                                  state.deviceDetails!.media![0].timeInterval ??
+                                      800)
+                          : Container(),
+          // state.deviceDetails?.media?[0].type != 'image'
+          //     ? buildvideo(context, size, controller, size.height * .9)
+          //     : state.deviceDetails?.media?[0].type == 'image'
+          //         ? buildOneImage(size, state, 0, size.height * .9)
+          //         : Container(),
+          const SizedBox(
+            width: 5,
+          ),
+          state.deviceDetails?.media?[1].type == 'image'
+              ? buildOneImage(size, state, 1, size.height)
+              : state.deviceDetails?.media?[1].type == 'carousel'
+                  ? CarouselSlider1(
+                      size: size.width,
+                      height: size.height,
+                      imageList: state.deviceDetails!.media![1].carouselImages!,
+                      dur: state.deviceDetails!.media![1].timeInterval ?? 800,
+                      ani: state.deviceDetails!.media![1].animation)
+                  : buildvideo(context, size, controller2, size.height),
+          // state.deviceDetails?.media?[1].type != 'image'
+          //     ? buildvideo(context, size, controller2, size.height * .9)
+          //     : state.deviceDetails?.media?[1].type == 'image'
+          //         ? buildOneImage(size, state, 1, size.height * .9)
+          //         : Container(),
+          const SizedBox(
+            width: 5,
+          ),
+          state.deviceDetails?.media?[2].type == 'image'
+              ? buildOneImage(size, state, 2, size.height)
+              : state.deviceDetails?.media?[2].type == 'carousel'
+                  ? CarouselSlider1(
+                      size: size.width,
+                      height: size.height,
+                      imageList: state.deviceDetails!.media![2].carouselImages!,
+                      dur: state.deviceDetails!.media![2].timeInterval ?? 800,
+                      ani: state.deviceDetails!.media![2].animation)
+                  : buildvideo(context, size, controller3, size.height),
+        ],
       ),
     ),
   );

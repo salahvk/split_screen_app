@@ -106,6 +106,7 @@ class Media {
   int? timeInterval;
   String? file;
   var thumbnail;
+  var animation;
   List<String>? carouselImages;
 
   Media(
@@ -114,6 +115,7 @@ class Media {
       this.type,
       this.timeInterval,
       this.file,
+      this.animation,
       this.thumbnail,
       this.carouselImages});
 
@@ -123,6 +125,7 @@ class Media {
     type = json['type'];
     timeInterval = json['time_interval'];
     file = json['file'];
+    animation = json['animation'];
     thumbnail = json['thumbnail'];
     carouselImages = json['carousel_images'].cast<String>();
   }
@@ -133,6 +136,7 @@ class Media {
     data['title'] = title;
     data['type'] = type;
     data['time_interval'] = timeInterval;
+    data['animation'] = animation;
     data['file'] = file;
     data['thumbnail'] = thumbnail;
     data['carousel_images'] = carouselImages;
