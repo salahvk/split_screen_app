@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:split_screen_app/core/controllers/controllers.dart';
 import 'package:split_screen_app/core/utils/change_url.dart';
 import 'package:split_screen_app/domain/core/api_endPoint.dart';
@@ -43,6 +45,7 @@ setControllers(DeviceLayoutDetails deviceDetailsModel) async {
       controller?.initialize();
       controller?.play();
     } else if (deviceDetailsModel.media?[0].type == "youtube") {
+      log("youtube started");
       ytController = YoutubePlayerController(
         initialVideoId: url1 ?? '',
         flags: const YoutubePlayerFlags(
@@ -55,6 +58,13 @@ setControllers(DeviceLayoutDetails deviceDetailsModel) async {
           enableCaption: false,
         ),
       );
+      ytController?.play();
+      ytController?.addListener(
+        () {
+          log("Listening");
+        },
+      );
+      print(ytController);
     }
   }
   if (deviceDetailsModel.deviceDetails!.elements! > 1) {

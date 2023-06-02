@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
 import 'package:meta/meta.dart';
 import 'package:platform_device_id/platform_device_id.dart';
+import 'package:split_screen_app/core/controllers/controllers.dart';
 import 'package:split_screen_app/core/utils/set_controllers.dart';
 import 'package:split_screen_app/domain/core/api_endPoint.dart';
 import 'package:http/http.dart' as http;
@@ -112,12 +113,22 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
             deviceId: deviceId, isDeviceReg: false, isScreenRef: false));
       }
       if (jsonResponse["modify"] == true) {
+        try {
+          ytController?.dispose();
+        } catch (_) {}
+
+        controller?.dispose();
+        controller2?.dispose();
+        controller3?.dispose();
+        controller4?.dispose();
         Either<MainFailure, DeviceLayoutDetails> result =
             await LayoutImp().getLayoutDetails();
         DeviceLayoutDetails deviceDetailsModel =
             result.getOrElse(() => DeviceLayoutDetails());
 
         await setControllers(deviceDetailsModel);
+        print("Controllers initialised");
+        // print(ytController);
         emit(SplashLoaded(
             deviceId: deviceId,
             isDeviceReg: true,

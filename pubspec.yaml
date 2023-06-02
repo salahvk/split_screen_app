@@ -56,6 +56,10 @@ dependencies:
   carousel_slider: ^4.2.1
   animated_snack_bar: ^0.3.1
   native_device_orientation: ^1.1.4
+  url_launcher: ^6.1.11
+  flutter_inappwebview: ^5.7.2+3
+  webview_flutter: ^4.2.1
+  # webview_flutter: ^4.2.1
   # device_information: ^0.0.4
   # motion_sensors: ^0.1.0
   # fan_carousel_image_slider: ^0.1.2

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:split_screen_app/application/bloc/splash_bloc.dart';
 import 'package:split_screen_app/domain/core/api_endPoint.dart';
@@ -16,7 +18,10 @@ Widget buildOneScreen(
         : state.deviceDetails?.media?[0].type == 'youtube'
             ? buildOneYtbvideo(context, size, ytController, size.height)
             : state.deviceDetails?.media?[0].type == 'video'
-                ? buildvid(context, size, controller, size.height)
+                ? CustomVideoPlayer(
+                    controller: controller,
+                    height: size.height,
+                  )
                 : state.deviceDetails?.media?[0].type == 'carousel'
                     ? CarouselSlider2(
                         size: size.width,
@@ -38,16 +43,49 @@ Widget buildImage(size, state, index, height) {
   );
 }
 
-Widget buildvid(
-    BuildContext context, size, VideoPlayerController controller, height) {
-  return ClipRRect(
-    borderRadius: BorderRadius.circular(14),
-    child: SizedBox(
-        height: height,
-        width: size.width,
+// Widget buildvid(
+//     BuildContext context, size, VideoPlayerController controller, height) {
+//   return ClipRRect(
+//     borderRadius: BorderRadius.circular(14),
+//     child: SizedBox(
+//         height: height,
+//         width: size.width,
+//         // decoration: BoxDecoration(borderRadius: BorderRadius.circular(25)),
+//         child: VideoPlayer(controller)),
+//   );
+// }
+class CustomVideoPlayer extends StatefulWidget {
+  final VideoPlayerController controller;
+  final double height;
+
+  const CustomVideoPlayer(
+      {super.key, required this.controller, required this.height});
+
+  @override
+  State<CustomVideoPlayer> createState() => _CustomVideoPlayerState();
+}
+
+class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    log("disposing");
+    // widget.controller.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(14),
+      child: SizedBox(
+        height: widget.height,
+        width: MediaQuery.of(context).size.width,
         // decoration: BoxDecoration(borderRadius: BorderRadius.circular(25)),
-        child: VideoPlayer(controller)),
-  );
+        child: VideoPlayer(widget.controller),
+      ),
+    );
+  }
 }
 
 Widget buildOneYtbvideo(BuildContext context, size, ytcontroller, height) {
@@ -65,9 +103,9 @@ Widget buildOneYtbvideo(BuildContext context, size, ytcontroller, height) {
           playedColor: Colors.amber,
           handleColor: Colors.amberAccent,
         ),
-        // onReady: () {
-        //   _isPlayerReady = true;
-        // },
+        onReady: () {
+          log("Ready");
+        },
       ),
     ),
   );
