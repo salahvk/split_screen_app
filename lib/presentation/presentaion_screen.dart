@@ -30,10 +30,10 @@ class _PresentationScreenState extends State<PresentationScreen> {
   void initState() {
     super.initState();
     deviceId = Hive.box("device_id").get('id');
-    print("init state 1");
+    // print("init state 1");
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       timer = Timer.periodic(const Duration(seconds: 3), (timer) {
-        print("init state 2");
+        // print("init state 2");
         // print("3");
         // final splashBloc = context.read<SplashBloc>();
         // splashBloc.add(FetchLayoutModify());
@@ -96,45 +96,45 @@ class _PresentationScreenState extends State<PresentationScreen> {
     width = size.width;
     return BlocConsumer<SplashBloc, SplashState>(
       listener: (context, state) {
-        print("bloc listener 3");
+        // print("bloc listener 3");
         if (state is SplashLoaded && state.isScreenRef == true) {
-          print("bloc listener 4");
-          closeInAppWebView();
-          SystemChrome.setPreferredOrientations([
-            DeviceOrientation.portraitUp,
-          ]);
-          bool isPortraitModeSupported =
-              MediaQuery.of(context).orientation == Orientation.portrait;
+          // print("bloc listener 4");
+          // closeInAppWebView();
+          // SystemChrome.setPreferredOrientations([
+          //   DeviceOrientation.portraitUp,
+          // ]);
+          // bool isPortraitModeSupported =
+          //     MediaQuery.of(context).orientation == Orientation.portrait;
           Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) {
             return const PresentationScreen();
           }));
 
-          final eleCou = state.deviceDetails?.deviceDetails?.elements;
-          print(isPortraitModeSupported);
-          if (!isPortraitModeSupported) {
-            print("is portrait mode supported 5");
-            if ((eleCou == 1 || eleCou == 2 || eleCou == 3 || eleCou == 4) &&
-                state.deviceDetails?.deviceDetails?.orientation == 'portrait') {
-              laun();
-              print("is portrait mode supported 6");
-            }
-          }
-        } else if (state is SplashLoaded && state.isScreenRef == false) {
+          // final eleCou = state.deviceDetails?.deviceDetails?.elements;
+          // print(isPortraitModeSupported);
+          // if (!isPortraitModeSupported) {
+          //   print("is portrait mode supported 5");
+          //   if ((eleCou == 1 || eleCou == 2 || eleCou == 3 || eleCou == 4) &&
+          //       state.deviceDetails?.deviceDetails?.orientation == 'portrait') {
+          //     laun();
+          //     print("is portrait mode supported 6");
+          //   }
+          // }
+        } else if (state is SplashLoaded && state.isScreenRef == null) {
           print("7");
-          final eleCou = state.deviceDetails?.deviceDetails?.elements;
-          SystemChrome.setPreferredOrientations([
-            DeviceOrientation.portraitUp,
-          ]);
-          bool isPortraitModeSupported =
-              MediaQuery.of(context).orientation == Orientation.portrait;
-          if (!isPortraitModeSupported) {
-            print("8");
-            if ((eleCou == 1 || eleCou == 2 || eleCou == 3 || eleCou == 4) &&
-                state.deviceDetails?.deviceDetails?.orientation == 'portrait') {
-              print("9");
-              laun();
-            }
-          }
+          // final eleCou = state.deviceDetails?.deviceDetails?.elements;
+          // SystemChrome.setPreferredOrientations([
+          //   DeviceOrientation.portraitUp,
+          // ]);
+          // bool isPortraitModeSupported =
+          //     MediaQuery.of(context).orientation == Orientation.portrait;
+          // if (!isPortraitModeSupported) {
+          //   print("8");
+          //   if ((eleCou == 1 || eleCou == 2 || eleCou == 3 || eleCou == 4) &&
+          //       state.deviceDetails?.deviceDetails?.orientation == 'portrait') {
+          //     print("9");
+          //     laun();
+          //   }
+          // }
         }
       },
       builder: (context, state) {

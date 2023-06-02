@@ -51,6 +51,7 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
           await Future.delayed(const Duration(seconds: 3));
           final updatedTime = deviceDetailsModel.deviceDetails?.layoutUpdatedAt;
           Hive.box("updated_at").put('time', updatedTime ?? '');
+          print("object");
           await setControllers(deviceDetailsModel);
 
           emit(SplashLoaded(
