@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -26,14 +27,23 @@ class _PresentationScreenState extends State<PresentationScreen> {
   double width = 0;
   double height = 0;
   String? deviceId;
+  bool isPortraitModeSupported1 = true;
   @override
   void initState() {
     super.initState();
     deviceId = Hive.box("device_id").get('id');
-    // print("init state 1");
+    print("init state 1");
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      await SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp,
+      ]);
+      isPortraitModeSupported1 =
+          MediaQuery.of(context).orientation == Orientation.portrait;
+      print(MediaQuery.of(context).orientation);
+      log(isPortraitModeSupported1.toString());
+      print(isPortraitModeSupported1);
       timer = Timer.periodic(const Duration(seconds: 3), (timer) {
-        // print("init state 2");
+        print("init state 2");
         // print("3");
         // final splashBloc = context.read<SplashBloc>();
         // splashBloc.add(FetchLayoutModify());
@@ -95,49 +105,50 @@ class _PresentationScreenState extends State<PresentationScreen> {
     height = size.height;
     width = size.width;
     return BlocConsumer<SplashBloc, SplashState>(
-      listener: (context, state) {
+      listener: (context, state) async {
         // print("bloc listener 3");
         if (state is SplashLoaded && state.isScreenRef == true) {
-          // print("bloc listener 4");
-          // closeInAppWebView();
-          // SystemChrome.setPreferredOrientations([
-          //   DeviceOrientation.portraitUp,
-          // ]);
-          // bool isPortraitModeSupported =
-          //     MediaQuery.of(context).orientation == Orientation.portrait;
+          print("bloc listener 4");
+          closeInAppWebView();
+
           Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) {
             return const PresentationScreen();
           }));
-
-          // final eleCou = state.deviceDetails?.deviceDetails?.elements;
-          // print(isPortraitModeSupported);
-          // if (!isPortraitModeSupported) {
-          //   print("is portrait mode supported 5");
-          //   if ((eleCou == 1 || eleCou == 2 || eleCou == 3 || eleCou == 4) &&
-          //       state.deviceDetails?.deviceDetails?.orientation == 'portrait') {
-          //     laun();
-          //     print("is portrait mode supported 6");
-          //   }
-          // }
+          // await SystemChrome.setPreferredOrientations([
+          //   DeviceOrientation.portraitUp,
+          // ]);
+          isPortraitModeSupported1 =
+              MediaQuery.of(context).orientation == Orientation.portrait;
+          final eleCou = state.deviceDetails?.deviceDetails?.elements;
+          print(isPortraitModeSupported1);
+          if (!isPortraitModeSupported1) {
+            print("is portrait mode supported 5");
+            if ((eleCou == 1 || eleCou == 2 || eleCou == 3 || eleCou == 4) &&
+                state.deviceDetails?.deviceDetails?.orientation == 'portrait') {
+              laun();
+              print("is portrait mode supported 6");
+            }
+          }
         } else if (state is SplashLoaded && state.isScreenRef == null) {
           print("7");
-          // final eleCou = state.deviceDetails?.deviceDetails?.elements;
+          final eleCou = state.deviceDetails?.deviceDetails?.elements;
           // SystemChrome.setPreferredOrientations([
           //   DeviceOrientation.portraitUp,
           // ]);
-          // bool isPortraitModeSupported =
-          //     MediaQuery.of(context).orientation == Orientation.portrait;
-          // if (!isPortraitModeSupported) {
-          //   print("8");
-          //   if ((eleCou == 1 || eleCou == 2 || eleCou == 3 || eleCou == 4) &&
-          //       state.deviceDetails?.deviceDetails?.orientation == 'portrait') {
-          //     print("9");
-          //     laun();
-          //   }
-          // }
+          isPortraitModeSupported1 =
+              MediaQuery.of(context).orientation == Orientation.portrait;
+          if (!isPortraitModeSupported1) {
+            print("8");
+            if ((eleCou == 1 || eleCou == 2 || eleCou == 3 || eleCou == 4) &&
+                state.deviceDetails?.deviceDetails?.orientation == 'portrait') {
+              print("9");
+              laun();
+            }
+          }
         }
       },
       builder: (context, state) {
+        WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {});
         if (state is SplashLoaded) {
           final eleCou = state.deviceDetails?.deviceDetails?.elements;
 
@@ -149,8 +160,10 @@ class _PresentationScreenState extends State<PresentationScreen> {
             ]);
             bool isPortraitModeSupported =
                 MediaQuery.of(context).orientation == Orientation.portrait;
+            print(isPortraitModeSupported);
             if (isPortraitModeSupported) {
               print("11");
+              closeInAppWebView();
               return buildFourScreens(
                 context,
                 state,
@@ -190,6 +203,7 @@ class _PresentationScreenState extends State<PresentationScreen> {
             bool isPortraitModeSupported =
                 MediaQuery.of(context).orientation == Orientation.portrait;
             if (isPortraitModeSupported) {
+              closeInAppWebView();
               return buildThreeScreens(
                 context,
                 state,
@@ -225,6 +239,7 @@ class _PresentationScreenState extends State<PresentationScreen> {
             bool isPortraitModeSupported =
                 MediaQuery.of(context).orientation == Orientation.portrait;
             if (isPortraitModeSupported) {
+              closeInAppWebView();
               return buildTwoScreensPor(
                 context,
                 state,
@@ -260,6 +275,7 @@ class _PresentationScreenState extends State<PresentationScreen> {
             bool isPortraitModeSupported =
                 MediaQuery.of(context).orientation == Orientation.portrait;
             if (isPortraitModeSupported) {
+              closeInAppWebView();
               return buildOneScreen(
                 context,
                 state,
@@ -284,12 +300,12 @@ class _PresentationScreenState extends State<PresentationScreen> {
               ytController,
             );
           }
-          // return buildImage(context);
-          return Container(
-            child: const Center(
-              child: CircularProgressIndicator(),
-            ),
-          );
+          return buildImage(context);
+          // return Container(
+          //   child: const Center(
+          //     child: CircularProgressIndicator(),
+          //   ),
+          // );
         }
         return Container();
       },

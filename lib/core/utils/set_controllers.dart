@@ -61,10 +61,10 @@ setControllers(DeviceLayoutDetails deviceDetailsModel) async {
       ytController?.play();
       ytController?.addListener(
         () {
-          log("Listening");
+          // log("Listening");
         },
       );
-      print(ytController);
+      // print(ytController);
     }
   }
   if (deviceDetailsModel.deviceDetails!.elements! > 1) {
