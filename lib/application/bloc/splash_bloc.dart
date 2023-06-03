@@ -3,12 +3,16 @@ import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
 import 'package:meta/meta.dart';
 import 'package:platform_device_id/platform_device_id.dart';
+import 'package:split_screen_app/core/controllers/controllers.dart';
+import 'package:split_screen_app/core/utils/set_controllers.dart';
 import 'package:split_screen_app/domain/core/api_endPoint.dart';
-import 'package:split_screen_app/domain/device_layout_details/device_layout_details.dart';
 import 'package:http/http.dart' as http;
+import 'package:split_screen_app/domain/device_layout_details/device_layout.dart';
 import 'package:split_screen_app/domain/failures/main_failures.dart';
 import 'package:split_screen_app/infrastructure/layout_details.dart';
 
@@ -23,45 +27,38 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
         emit(SplashLoading());
         await Future.delayed(const Duration(seconds: 3));
 
-        deviceId = await PlatformDeviceId.getDeviceId;
+        try {
+          deviceId = await PlatformDeviceId.getDeviceId;
+          await Hive.box("device_id").put('id', deviceId);
+          print(deviceId);
+        } on PlatformException {
+          // deviceId = await getLastDeviceId();
+          // Hive.box("device_id").put('id', deviceId);
+        }
 
-        print(deviceId);
-        Hive.box("device_id").put('id', deviceId ?? '');
-        // Either<MainFailure, DeviceLayoutDetails> result =
-        //     await LayoutImp().getLayoutDetails();
-        final url = Uri.parse(ApiEndPoint.layoutDetails);
-        final headers = {'Content-Type': 'application/json'};
-        final response = await http.post(
-          url,
-          headers: headers,
-        );
-
-        //  log(response.data.toString());
-        var jsonResponse = jsonDecode(response.body);
-        print(jsonResponse);
-
-        if (jsonResponse["status"] == false) {
+        Either<MainFailure, DeviceLayoutDetails> result =
+            await LayoutImp().getLayoutDetails();
+        final deviceDetailsModel =
+            result.getOrElse(() => DeviceLayoutDetails());
+        if (deviceDetailsModel.status == false) {
           await Future.delayed(const Duration(seconds: 3));
           emit(SplashLoaded(
-              deviceId: deviceId, isDeviceReg: false, isNavToLogin: false));
+              deviceId: deviceId,
+              isDeviceReg: false,
+              isNavToLogin: false,
+              message: deviceDetailsModel.message));
         } else {
           await Future.delayed(const Duration(seconds: 3));
-          final updatedTime =
-              jsonResponse["device_details"]["layout_updated_at"];
+          final updatedTime = deviceDetailsModel.deviceDetails?.layoutUpdatedAt;
           Hive.box("updated_at").put('time', updatedTime ?? '');
-          Either<MainFailure, DeviceLayoutDetails> result =
-              await LayoutImp().getLayoutDetails();
-          DeviceLayoutDetails deviceDetailsModel =
-              result.getOrElse(() => DeviceLayoutDetails());
+          print("object");
+          await setControllers(deviceDetailsModel);
+
           emit(SplashLoaded(
               deviceId: deviceId,
               isDeviceReg: true,
               deviceDetails: deviceDetailsModel));
         }
-
-        // final deviceDetailsModel = result.getOrElse(() =>
-        //     DeviceLayoutDetails()); // Use getOrElse() to handle failure case and provide a default value
-        // print(result);
       } catch (_) {
         // deviceId = 'Failed to get deviceId.';
       }
@@ -75,77 +72,73 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
           DeviceLayoutDetails deviceDetailsModel =
               result.getOrElse(() => DeviceLayoutDetails());
           String? deviceId;
-          deviceId = await PlatformDeviceId.getDeviceId;
+          try {
+            deviceId = await PlatformDeviceId.getDeviceId;
+
+            await Hive.box("device_id").put('id', deviceId);
+          } on PlatformException {
+            // deviceId = await getLastDeviceId();
+            // Hive.box("device_id").put('id', deviceId);
+          }
+
           await Future.delayed(const Duration(seconds: 3));
 
-          final url = Uri.parse(ApiEndPoint.layoutDetails);
-          final headers = {'Content-Type': 'application/json'};
-          final response = await http.post(
-            url,
-            headers: headers,
-          );
-//
-          //  log(response.data.toString());
-          var jsonResponse = jsonDecode(response.body);
-
-          final updatedTime =
-              jsonResponse["device_details"]["layout_updated_at"];
+          final updatedTime = deviceDetailsModel.deviceDetails?.layoutUpdatedAt;
           Hive.box("updated_at").put('time', updatedTime ?? '');
-          print(jsonResponse["status"]);
-          if (jsonResponse["status"] == false) {
+
+          if (deviceDetailsModel.status == false) {
           } else {
-            Either<MainFailure, DeviceLayoutDetails> result =
-                await LayoutImp().getLayoutDetails();
-            DeviceLayoutDetails deviceDetailsModel =
-                result.getOrElse(() => DeviceLayoutDetails());
+            await setControllers(deviceDetailsModel);
             emit(SplashLoaded(
                 deviceId: deviceId,
                 isDeviceReg: true,
                 deviceDetails: deviceDetailsModel));
           }
-//
-          // emit(SplashLoaded(
-          //     deviceDetails: deviceDetailsModel, deviceId: deviceId));
         } catch (_) {}
       },
     );
     on<FetchLayoutModify>((event, emit) async {
+      String deviceId = Hive.box("device_id").get('id');
       String updatedAt = Hive.box("updated_at").get('time');
-
-      print(updatedAt);
-      log("_____________________");
       final url1 = "${ApiEndPoint.layoutDetails}&updated_time=$updatedAt";
-      print(url1);
       final url = Uri.parse(url1);
       final headers = {'Content-Type': 'application/json'};
       final response = await http.post(
         url,
         headers: headers,
       );
-//
-      //  log(response.data.toString());
       var jsonResponse = jsonDecode(response.body);
-
-      print(jsonResponse);
+      log(response.body);
+      if (jsonResponse["status"] == false) {
+        emit(SplashLoaded(
+            deviceId: deviceId, isDeviceReg: false, isScreenRef: false));
+      }
       if (jsonResponse["modify"] == true) {
-        log("truuuuuuuuuuuuuuuuuuuuuuuuuuuu");
+        try {
+          ytController?.dispose();
+        } catch (_) {}
+
+        controller?.dispose();
+        controller2?.dispose();
+        controller3?.dispose();
+        controller4?.dispose();
         Either<MainFailure, DeviceLayoutDetails> result =
             await LayoutImp().getLayoutDetails();
         DeviceLayoutDetails deviceDetailsModel =
             result.getOrElse(() => DeviceLayoutDetails());
+
+        await setControllers(deviceDetailsModel);
+        print("Controllers initialised");
+        // print(ytController);
         emit(SplashLoaded(
             deviceId: deviceId,
             isDeviceReg: true,
             deviceDetails: deviceDetailsModel,
             isScreenRef: true));
 
-        // await Future.delayed(const Duration(seconds: 3));
         final updatedTime = jsonResponse["device_details"]["layout_updated_at"];
         Hive.box("updated_at").put('time', updatedTime ?? '');
       }
-      // print(jsonResponse["status"]);
-      // if (jsonResponse["status"] == false) {
-      // } else {}
     });
   }
 }

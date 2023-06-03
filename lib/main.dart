@@ -11,10 +11,10 @@ void main() async {
   await Hive.openBox("device_id");
   await Hive.openBox("updated_at");
   await SystemChrome.setPreferredOrientations([
-    // DeviceOrientation.portraitUp,
     DeviceOrientation.landscapeLeft,
     DeviceOrientation.landscapeRight,
   ]);
+
   runApp(const MyApp());
 }
 

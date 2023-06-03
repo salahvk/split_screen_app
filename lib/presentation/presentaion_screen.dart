@@ -1,273 +1,262 @@
 import 'dart:async';
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive/hive.dart';
 import 'package:split_screen_app/application/bloc/splash_bloc.dart';
+import 'package:split_screen_app/core/controllers/controllers.dart';
 import 'package:split_screen_app/domain/core/api_endPoint.dart';
 import 'package:split_screen_app/presentation/widgets/screens/four_screens.dart';
 import 'package:split_screen_app/presentation/widgets/screens/one_screen.dart';
 import 'package:split_screen_app/presentation/widgets/screens/three_screens.dart';
 import 'package:split_screen_app/presentation/widgets/screens/two_screens.dart';
 import 'package:split_screen_app/presentation/widgets/screens/two_screens_port.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-import 'package:webview_flutter/webview_flutter.dart';
-import 'package:youtube_player_flutter/youtube_player_flutter.dart';
-
-class ImageScreen extends StatefulWidget {
-  const ImageScreen({super.key});
+class PresentationScreen extends StatefulWidget {
+  const PresentationScreen({super.key});
 
   @override
-  State<ImageScreen> createState() => _ImageScreenState();
+  State<PresentationScreen> createState() => _PresentationScreenState();
 }
 
-class _ImageScreenState extends State<ImageScreen> {
-  WebViewController? controller;
-  WebViewController? controller2;
-  WebViewController? controller3;
-  WebViewController? controller4;
+class _PresentationScreenState extends State<PresentationScreen> {
   Timer? timer;
-  late YoutubePlayerController ytcontroller;
-  late YoutubePlayerController ytcontroller2;
-  late YoutubePlayerController ytcontroller3;
-  late YoutubePlayerController ytcontroller4;
-  late PlayerState _playerState;
-  late YoutubeMetaData _videoMetaData;
-  String? url1;
-  String? url2;
-  String? url3;
-  String? url4;
-  final bool _isPlayerReady = false;
+  bool isLaunched = false;
+  double width = 0;
+  double height = 0;
+  String? deviceId;
+  bool isPortraitModeSupported1 = true;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    final myBlocState = context.read<SplashBloc>().state;
-    if (myBlocState is SplashLoaded) {
-      log("++++++++++++++++");
-      if (myBlocState.deviceDetails?.media?[0].type != "image") {
-        url1 = myBlocState.deviceDetails?.media?[0].type == "video"
-            ? "$endPoint${myBlocState.deviceDetails?.media?[0].file}"
-            : myBlocState.deviceDetails?.media?[0].file;
-        if (myBlocState.deviceDetails?.media?[0].type == "video") {
-          controller = WebViewController()
-            ..setJavaScriptMode(JavaScriptMode.unrestricted)
-            ..setBackgroundColor(Colors.white)
-            ..loadRequest(Uri.parse(url1 ?? ''));
-        }
-      }
-      if (myBlocState.deviceDetails!.deviceDetails!.elements! > 1) {
-        if (myBlocState.deviceDetails?.media?[1].type != "image") {
-          url2 = myBlocState.deviceDetails?.media?[1].type == "video"
-              ? "$endPoint${myBlocState.deviceDetails?.media?[1].file}"
-              : myBlocState.deviceDetails?.media?[1].file;
-          if (myBlocState.deviceDetails?.media?[1].type == "video") {
-            controller2 = WebViewController()
-              ..setJavaScriptMode(JavaScriptMode.unrestricted)
-              ..setBackgroundColor(Colors.white)
-              ..loadRequest(Uri.parse(url2 ?? ''));
-          }
-        }
-      }
-
-      if (myBlocState.deviceDetails!.deviceDetails!.elements! > 2) {
-        if (myBlocState.deviceDetails?.media?[2].type != "image") {
-          url3 = myBlocState.deviceDetails?.media?[2].type == "video"
-              ? "$endPoint${myBlocState.deviceDetails?.media?[2].file}"
-              : myBlocState.deviceDetails?.media?[2].file;
-          if (myBlocState.deviceDetails?.media?[2].type == "video") {
-            controller3 = WebViewController()
-              ..setJavaScriptMode(JavaScriptMode.unrestricted)
-              ..setBackgroundColor(Colors.white)
-              ..loadRequest(Uri.parse(url3 ?? ''));
-          }
-        }
-      }
-
-      if (myBlocState.deviceDetails!.deviceDetails!.elements! > 3) {
-        log("message");
-        if (myBlocState.deviceDetails?.media?[3].type != "image") {
-          url4 = myBlocState.deviceDetails?.media?[3].type == "video"
-              ? "$endPoint${myBlocState.deviceDetails?.media?[3].file}"
-              : myBlocState.deviceDetails?.media?[3].file;
-          if (myBlocState.deviceDetails?.media?[3].type == "video") {
-            controller4 = WebViewController()
-              ..setJavaScriptMode(JavaScriptMode.unrestricted)
-              ..setBackgroundColor(Colors.white)
-              ..loadRequest(Uri.parse(url4 ?? ''));
-          }
-        }
-      }
-
-      // Do something with these values
-
-      ytcontroller = YoutubePlayerController(
-        initialVideoId: url1 ?? '',
-        flags: const YoutubePlayerFlags(
-          mute: false,
-          autoPlay: true,
-          disableDragSeek: false,
-          loop: true,
-          isLive: false,
-          forceHD: false,
-          enableCaption: true,
-        ),
-      )..addListener(listener);
-
-      _videoMetaData = const YoutubeMetaData();
-      _playerState = PlayerState.unknown;
-
-      ytcontroller2 = YoutubePlayerController(
-        initialVideoId: url2 ?? '',
-        flags: const YoutubePlayerFlags(
-          mute: false,
-          autoPlay: true,
-          disableDragSeek: false,
-          loop: true,
-          isLive: false,
-          forceHD: false,
-          enableCaption: true,
-        ),
-      )..addListener(listener);
-
-      _videoMetaData = const YoutubeMetaData();
-      _playerState = PlayerState.unknown;
-
-      ytcontroller3 = YoutubePlayerController(
-        initialVideoId: url3 ?? '',
-        flags: const YoutubePlayerFlags(
-          mute: false,
-          autoPlay: true,
-          disableDragSeek: false,
-          loop: true,
-          isLive: false,
-          forceHD: false,
-          enableCaption: true,
-        ),
-      )..addListener(listener);
-
-      _videoMetaData = const YoutubeMetaData();
-      _playerState = PlayerState.unknown;
-
-      ytcontroller4 = YoutubePlayerController(
-        initialVideoId: url4 ?? '',
-        flags: const YoutubePlayerFlags(
-          mute: false,
-          autoPlay: true,
-          disableDragSeek: false,
-          loop: true,
-          isLive: false,
-          forceHD: false,
-          enableCaption: true,
-        ),
-      )..addListener(listener);
-      log(url2 ?? '');
-
-      _videoMetaData = const YoutubeMetaData();
-      _playerState = PlayerState.unknown;
-    }
+    deviceId = Hive.box("device_id").get('id');
+    print("init state 1");
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      await SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp,
+      ]);
+      isPortraitModeSupported1 =
+          MediaQuery.of(context).orientation == Orientation.portrait;
+      print(MediaQuery.of(context).orientation);
+      log(isPortraitModeSupported1.toString());
+      print(isPortraitModeSupported1);
       timer = Timer.periodic(const Duration(seconds: 3), (timer) {
+        print("init state 2");
+        // print("3");
+        // final splashBloc = context.read<SplashBloc>();
+        // splashBloc.add(FetchLayoutModify());
+        // final currentState = splashBloc.state;
+        // print("LOOO1");
+
         BlocProvider.of<SplashBloc>(context).add(
           FetchLayoutModify(),
         );
 
-        print("Timer");
+        // if (currentState is SplashLoaded &&
+        //     currentState.deviceDetails?.deviceDetails?.orientation ==
+        //         'landscape') {
+        //   closeInAppWebView();
+        // } else if (currentState is SplashLoaded &&
+        //     currentState.deviceDetails?.modify != false) {
+        //   print("Portrait");
+        // }
+        // print("LOOO");
       });
     });
-  }
 
-  void listener() {
-    if (_isPlayerReady && mounted && !ytcontroller.value.isFullScreen) {
-      setState(() {
-        _playerState = ytcontroller.value.playerState;
-        _videoMetaData = ytcontroller.metadata;
-      });
-    }
+    // motionSensors.isOrientationAvailable().then((available) {
+    //   if (available) {
+    //     motionSensors.orientation.listen((OrientationEvent event) {
+    //       print(degrees(_orientation.x).toInt());
+    //       if (degrees(_orientation.x).toInt() < 50 &&
+    //           degrees(_orientation.x).toInt() > -50) {
+    //         SystemChrome.setPreferredOrientations([
+    //           DeviceOrientation.portraitUp,
+    //         ]);
+    //       } else {
+    //         SystemChrome.setPreferredOrientations([
+    //           DeviceOrientation.landscapeLeft,
+    //         ]);
+    //       }
+    //       setState(() {
+    //         _orientation.setValues(event.yaw, event.pitch, event.roll);
+    //       });
+    //     });
+    //   }
+    // });
   }
 
   @override
   void dispose() {
-    ytcontroller.dispose();
-    ytcontroller2.dispose();
-    ytcontroller3.dispose();
-    ytcontroller4.dispose();
-
+    // ytController?.dispose();
+    // controller?.dispose();
+    // controller2?.dispose();
+    // controller3?.dispose();
+    // controller4?.dispose();
+    print("controllers dispossing");
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    height = size.height;
+    width = size.width;
     return BlocConsumer<SplashBloc, SplashState>(
-      listener: (context, state) {
+      listener: (context, state) async {
+        // print("bloc listener 3");
         if (state is SplashLoaded && state.isScreenRef == true) {
+          print("bloc listener 4");
+          closeInAppWebView();
+
           Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) {
-            return const ImageScreen();
+            return const PresentationScreen();
           }));
+          // await SystemChrome.setPreferredOrientations([
+          //   DeviceOrientation.portraitUp,
+          // ]);
+          isPortraitModeSupported1 =
+              MediaQuery.of(context).orientation == Orientation.portrait;
+          final eleCou = state.deviceDetails?.deviceDetails?.elements;
+          print(isPortraitModeSupported1);
+          if (!isPortraitModeSupported1) {
+            print("is portrait mode supported 5");
+            if ((eleCou == 1 || eleCou == 2 || eleCou == 3 || eleCou == 4) &&
+                state.deviceDetails?.deviceDetails?.orientation == 'portrait') {
+              laun();
+              print("is portrait mode supported 6");
+            }
+          }
+        } else if (state is SplashLoaded && state.isScreenRef == null) {
+          print("7");
+          final eleCou = state.deviceDetails?.deviceDetails?.elements;
+          // SystemChrome.setPreferredOrientations([
+          //   DeviceOrientation.portraitUp,
+          // ]);
+          isPortraitModeSupported1 =
+              MediaQuery.of(context).orientation == Orientation.portrait;
+          if (!isPortraitModeSupported1) {
+            print("8");
+            if ((eleCou == 1 || eleCou == 2 || eleCou == 3 || eleCou == 4) &&
+                state.deviceDetails?.deviceDetails?.orientation == 'portrait') {
+              print("9");
+              laun();
+            }
+          }
         }
       },
       builder: (context, state) {
+        WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {});
         if (state is SplashLoaded) {
           final eleCou = state.deviceDetails?.deviceDetails?.elements;
 
-          if (eleCou == 4) {
-            if (state.deviceDetails?.deviceDetails?.orientation == 'portrait') {
-              SystemChrome.setPreferredOrientations([
-                DeviceOrientation.portraitUp,
-              ]);
-            } else {
-              SystemChrome.setPreferredOrientations([
-                DeviceOrientation.landscapeLeft,
-              ]);
-            }
-            return buildFourScreens(
+          if (eleCou == 4 &&
+              state.deviceDetails?.deviceDetails?.orientation == 'portrait') {
+            print("10");
+            SystemChrome.setPreferredOrientations([
+              DeviceOrientation.portraitUp,
+            ]);
+            bool isPortraitModeSupported =
+                MediaQuery.of(context).orientation == Orientation.portrait;
+            print(isPortraitModeSupported);
+            if (isPortraitModeSupported) {
+              print("11");
+              closeInAppWebView();
+              return buildFourScreens(
                 context,
                 state,
-                controller ?? WebViewController(),
-                controller2 ?? WebViewController(),
-                controller3 ?? WebViewController(),
-                controller4 ?? WebViewController(),
-                ytcontroller,
-                ytcontroller2,
-                ytcontroller3,
-                ytcontroller4);
-          } else if (eleCou == 3) {
-            if (state.deviceDetails?.deviceDetails?.orientation == 'portrait') {
-              SystemChrome.setPreferredOrientations([
-                DeviceOrientation.portraitUp,
-              ]);
+                controller,
+                controller2,
+                controller3,
+                controller4,
+                ytController,
+              );
             } else {
-              SystemChrome.setPreferredOrientations([
-                DeviceOrientation.landscapeLeft,
-              ]);
+              print("12");
+              if (state.isScreenRef == null) {
+                print("13");
+                laun();
+              }
             }
+          } else if (eleCou == 4 &&
+              state.deviceDetails?.deviceDetails?.orientation == 'landscape') {
+            SystemChrome.setPreferredOrientations([
+              DeviceOrientation.landscapeLeft,
+            ]);
+
+            return buildFourScreens(
+              context,
+              state,
+              controller,
+              controller2,
+              controller3,
+              controller4,
+              ytController,
+            );
+          } else if (eleCou == 3 &&
+              state.deviceDetails?.deviceDetails?.orientation == 'portrait') {
+            SystemChrome.setPreferredOrientations([
+              DeviceOrientation.portraitUp,
+            ]);
+            bool isPortraitModeSupported =
+                MediaQuery.of(context).orientation == Orientation.portrait;
+            if (isPortraitModeSupported) {
+              closeInAppWebView();
+              return buildThreeScreens(
+                context,
+                state,
+                controller,
+                controller2,
+                controller3,
+                ytController,
+              );
+            } else {
+              if (state.isScreenRef == null) {
+                laun();
+              }
+            }
+          } else if (eleCou == 3 &&
+              state.deviceDetails?.deviceDetails?.orientation == 'landscape') {
+            SystemChrome.setPreferredOrientations([
+              DeviceOrientation.landscapeLeft,
+            ]);
+
             return buildThreeScreens(
               context,
               state,
               controller,
               controller2,
               controller3,
-              ytcontroller,
-              ytcontroller2,
-              ytcontroller3,
+              ytController,
             );
           } else if (eleCou == 2 &&
               state.deviceDetails?.deviceDetails?.orientation == 'portrait') {
             SystemChrome.setPreferredOrientations([
               DeviceOrientation.portraitUp,
             ]);
-            return buildTwoScreensPor(
-              context,
-              state,
-              controller,
-              controller2,
-              ytcontroller,
-              ytcontroller2,
-            );
+            bool isPortraitModeSupported =
+                MediaQuery.of(context).orientation == Orientation.portrait;
+            if (isPortraitModeSupported) {
+              closeInAppWebView();
+              return buildTwoScreensPor(
+                context,
+                state,
+                controller,
+                controller2,
+                ytController,
+              );
+            } else {
+              if (state.isScreenRef == null) {
+                laun();
+              }
+            }
           } else if (eleCou == 2 &&
               state.deviceDetails?.deviceDetails?.orientation == 'landscape') {
+            // Navigator.pop(context);
+
+            // print(isLaunched);
             SystemChrome.setPreferredOrientations([
               DeviceOrientation.landscapeLeft,
             ]);
@@ -276,22 +265,31 @@ class _ImageScreenState extends State<ImageScreen> {
               state,
               controller,
               controller2,
-              ytcontroller,
-              ytcontroller2,
+              ytController,
             );
           } else if (eleCou == 1 &&
               state.deviceDetails?.deviceDetails?.orientation == 'portrait') {
             SystemChrome.setPreferredOrientations([
               DeviceOrientation.portraitUp,
             ]);
-            return buildOneScreen(
-              context,
-              state,
-              controller,
-              ytcontroller,
-            );
+            bool isPortraitModeSupported =
+                MediaQuery.of(context).orientation == Orientation.portrait;
+            if (isPortraitModeSupported) {
+              closeInAppWebView();
+              return buildOneScreen(
+                context,
+                state,
+                controller,
+                ytController,
+              );
+            } else {
+              if (state.isScreenRef == null) {
+                laun();
+              }
+            }
           } else if (eleCou == 1 &&
               state.deviceDetails?.deviceDetails?.orientation == 'landscape') {
+            // Navigator.pop(context);
             SystemChrome.setPreferredOrientations([
               DeviceOrientation.landscapeLeft,
             ]);
@@ -299,14 +297,30 @@ class _ImageScreenState extends State<ImageScreen> {
               context,
               state,
               controller,
-              ytcontroller,
+              ytController,
             );
           }
           return buildImage(context);
+          // return Container(
+          //   child: const Center(
+          //     child: CircularProgressIndicator(),
+          //   ),
+          // );
         }
         return Container();
       },
     );
+  }
+
+  void laun() async {
+    if (!isLaunched) {
+      isLaunched = true;
+      print("calling");
+
+      final url = '$endPoint/show-layout/$deviceId?width=$height&height=$width';
+      print(url);
+      await launchUrl(Uri.parse(url), mode: LaunchMode.inAppWebView);
+    }
   }
 }
 
@@ -315,129 +329,9 @@ Widget buildImage(BuildContext context) {
   return Scaffold(
     body: Image.asset(
       'assets/image.png',
-      fit: BoxFit.fitWidth,
+      fit: BoxFit.cover,
       width: size.width,
       height: size.height,
     ),
   );
 }
-
-// Widget buildFourScreens(BuildContext context, LayoutLoaded state, controller) {
-//   final size = MediaQuery.of(context).size;
-//   return Scaffold(
-//     backgroundColor: Colors.black,
-//     body: SafeArea(
-//       child: GridView.builder(
-//           padding: const EdgeInsets.only(left: 15, right: 15, top: 15),
-//           // shrinkWrap: true,
-//           // physics: const NeverScrollableScrollPhysics(),
-//           gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-//               maxCrossAxisExtent: 530,
-//               // childAspectRatio: 2 / 3,
-//               crossAxisSpacing: 5,
-//               mainAxisExtent: size.height * .4,
-//               mainAxisSpacing: 5),
-//           itemCount: 4,
-//           itemBuilder: (BuildContext ctx, index) {
-//             return InkWell(
-//               child: Container(
-//                   alignment: Alignment.center,
-//                   decoration: BoxDecoration(
-
-//                       // color: ColorManager.whiteColor,
-//                       borderRadius: BorderRadius.circular(5)),
-//                   child:
-//                       //  state.deviceDetails?.media?[index].type == 'youtube'?
-//                       buildvideo(context, size, controller)
-//                   //     : state.deviceDetails?.media?[index].type == 'image'
-//                   //         ? buildOneImage(size, state)
-//                   //         : Container(),
-//                   ),
-//             );
-//           }),
-//     ),
-//   );
-// }
-
-Widget buildvideo(
-    BuildContext context, size, WebViewController vlcController, height) {
-  return Expanded(
-    child: ClipRRect(
-      borderRadius: BorderRadius.circular(14),
-      child: Container(
-        height: height,
-        width: size.width,
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(25)),
-        child: WebViewWidget(
-          controller: vlcController,
-
-          // showControls: true,
-        ),
-      ),
-    ),
-  );
-}
-
-Widget buildOneImage(size, state, index, height) {
-  return Expanded(
-    child: ClipRRect(
-      borderRadius: BorderRadius.circular(14),
-      child: Image.network(
-        "$endPoint${state.deviceDetails?.media?[index].file}",
-        fit: BoxFit.contain,
-        width: size.width,
-        height: height,
-      ),
-    ),
-  );
-}
-
-Widget buildYtbvideo(BuildContext context, size, ytcontroller, height) {
-  return Expanded(
-    child: ClipRRect(
-      borderRadius: BorderRadius.circular(14),
-      child: Container(
-        height: height,
-        width: size.width,
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(25)),
-        child: YoutubePlayer(
-          controller: ytcontroller,
-          showVideoProgressIndicator: true,
-          // videoProgressIndicatorColor: Colors.amber,
-          progressColors: const ProgressBarColors(
-            playedColor: Colors.amber,
-            handleColor: Colors.amberAccent,
-          ),
-          // onReady: () {
-          //   _isPlayerReady = true;
-          // },
-        ),
-      ),
-    ),
-  );
-}
-
-// Widget buildYtbvideo2(BuildContext context, size, ytcontroller, height) {
-//   return Expanded(
-//     child: ClipRRect(
-//       borderRadius: BorderRadius.circular(14),
-//       child: Container(
-//         height: height,
-//         width: size.width,
-//         decoration: BoxDecoration(borderRadius: BorderRadius.circular(25)),
-//         child: YoutubePlayer(
-//           controller: ytcontroller,
-//           showVideoProgressIndicator: true,
-//           // videoProgressIndicatorColor: Colors.amber,
-//           progressColors: const ProgressBarColors(
-//             playedColor: Color.fromARGB(255, 0, 0, 0),
-//             handleColor: Color.fromARGB(255, 66, 55, 13),
-//           ),
-//           // onReady: () {
-//           //   _isPlayerReady = true;
-//           // },
-//         ),
-//       ),
-//     ),
-//   );
-// }

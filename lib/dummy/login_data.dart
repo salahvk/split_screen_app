@@ -16,7 +16,7 @@ class _LoginDataState extends State<LoginData> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       await Future.delayed(const Duration(seconds: 5));
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) {
-        return const ImageScreen();
+        return const PresentationScreen();
       }));
     });
   }

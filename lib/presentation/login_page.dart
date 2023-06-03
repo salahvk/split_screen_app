@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive/hive.dart';
 import 'package:split_screen_app/application/bloc/splash_bloc.dart';
 import 'package:split_screen_app/core/styles_manager.dart';
 import 'package:split_screen_app/presentation/presentaion_screen.dart';
@@ -20,27 +21,21 @@ class _LoginPageState extends State<LoginPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    deviceId = Hive.box("device_id").get('id');
     BlocProvider.of<SplashBloc>(context).add(
       FetchLayoutDetails(),
     );
-
-    // BlocProvider.of<SplashBloc>(context).add(
-    //   FetchDeviceId(),
-    // );
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       timer = Timer.periodic(const Duration(seconds: 2), (timer) {
         final myBlocState = context.read<SplashBloc>().state;
         if (myBlocState is SplashLoaded && myBlocState.isDeviceReg == true) {
           timer.cancel();
-          print("return");
+
           return;
         }
-        print("______________");
         BlocProvider.of<SplashBloc>(context).add(
           FetchLayoutDetails(),
         );
-
-        print("Timer");
       });
     });
   }
@@ -49,7 +44,6 @@ class _LoginPageState extends State<LoginPage> {
   void dispose() {
     super.dispose();
     timer?.cancel();
-    print("dispose");
   }
 
   @override
@@ -103,7 +97,7 @@ class _LoginPageState extends State<LoginPage> {
                     if (state is SplashLoaded && state.isDeviceReg == true) {
                       Navigator.pushReplacement(context,
                           MaterialPageRoute(builder: (ctx) {
-                        return const ImageScreen();
+                        return const PresentationScreen();
                       }));
                       // timer?.cancel();
                     }
@@ -112,15 +106,27 @@ class _LoginPageState extends State<LoginPage> {
                     if (state is SplashLoaded) {
                       return Container(
                         // width: size.width * .17,
-                        height: 30,
+                        // height: 50,
                         decoration: BoxDecoration(
                             color: Colors.transparent,
                             borderRadius: BorderRadius.circular(10)),
                         child: Center(
-                          child: Text(
-                            "Device Id : ${state.deviceId}",
-                            style: getSemiBoldStyle(
-                                color: Colors.white, fontSize: 13),
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 5),
+                                child: Text(
+                                  state.message ?? '',
+                                  style: getMediumtStyle(
+                                      color: Colors.white, fontSize: 13),
+                                ),
+                              ),
+                              Text(
+                                "Device Id : ${state.deviceId ?? deviceId}",
+                                style: getSemiBoldStyle(
+                                    color: Colors.white, fontSize: 13),
+                              ),
+                            ],
                           ),
                         ),
                       );
