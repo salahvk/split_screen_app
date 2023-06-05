@@ -26,6 +26,10 @@ class _LoginPageState extends State<LoginPage> {
       FetchLayoutDetails(),
     );
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      final isportraitSupport =
+          Hive.box("device_id").get('isPortraitModeSupported');
+      print(isportraitSupport);
+      print("************");
       timer = Timer.periodic(const Duration(seconds: 2), (timer) {
         final myBlocState = context.read<SplashBloc>().state;
         if (myBlocState is SplashLoaded && myBlocState.isDeviceReg == true) {

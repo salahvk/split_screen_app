@@ -40,7 +40,7 @@ class _CarouselSlider1State extends State<CarouselSlider1> {
           curve = Curves.linear;
         } else {
           curve = Curves.ease;
-          print("ease");
+          // print("ease");
         }
       });
     });
@@ -58,7 +58,7 @@ class _CarouselSlider1State extends State<CarouselSlider1> {
 
   void _startAutoPlay() {
     Future.delayed(const Duration(seconds: 2)).then((_) {
-      print(_currentPage);
+      // print(_currentPage);
       _pageController.nextPage(
         duration: const Duration(milliseconds: 500),
         curve: curve,
@@ -77,7 +77,7 @@ class _CarouselSlider1State extends State<CarouselSlider1> {
 
     if (index == widget.imageList.length + 1) {
       // Reached the end, go back to the first item
-      print(index);
+      // print(index);
       _pageController.jumpToPage(
         1,
         // duration: const Duration(milliseconds: 500), curve: curve
@@ -228,7 +228,7 @@ class _CarouselSlider2State extends State<CarouselSlider2> {
           curve = Curves.linear;
         } else {
           curve = Curves.ease;
-          print("ease");
+          // print("ease");
         }
       });
     });
@@ -263,7 +263,7 @@ class _CarouselSlider2State extends State<CarouselSlider2> {
 
     if (index == widget.imageList.length + 1) {
       // Reached the end, go back to the first item
-      print(index);
+      // print(index);
       _pageController.jumpToPage(
         1,
       );

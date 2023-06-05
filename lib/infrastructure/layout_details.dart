@@ -32,7 +32,7 @@ class LayoutImp implements LayoutServices {
       var jsonResponse = jsonDecode(responseBody);
       if (response.statusCode == 200 || response.statusCode == 201) {
         final result = DeviceLayoutDetails.fromJson(jsonResponse);
-        log(responseBody);
+        // log(responseBody);
         return Right(result);
       } else {
         return const Left(MainFailure.serverFailure());

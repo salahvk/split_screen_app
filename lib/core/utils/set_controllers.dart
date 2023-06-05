@@ -45,7 +45,6 @@ setControllers(DeviceLayoutDetails deviceDetailsModel) async {
       controller?.initialize();
       controller?.play();
     } else if (deviceDetailsModel.media?[0].type == "youtube") {
-      log("youtube started");
       ytController = YoutubePlayerController(
         initialVideoId: url1 ?? '',
         flags: const YoutubePlayerFlags(
@@ -61,10 +60,10 @@ setControllers(DeviceLayoutDetails deviceDetailsModel) async {
       ytController?.play();
       ytController?.addListener(
         () {
-          // log("Listening");
+          log("Listening");
         },
       );
-      // print(ytController);
+      print(ytController?.initialVideoId ?? '');
     }
   }
   if (deviceDetailsModel.deviceDetails!.elements! > 1) {

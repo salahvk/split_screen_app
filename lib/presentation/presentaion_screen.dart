@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -26,43 +25,20 @@ class _PresentationScreenState extends State<PresentationScreen> {
   bool isLaunched = false;
   double width = 0;
   double height = 0;
-  String? deviceId;
-  bool isPortraitModeSupported1 = true;
+  dynamic isportraitSupport;
+  // bool isPortraitModeSupported = true;
   @override
   void initState() {
     super.initState();
-    deviceId = Hive.box("device_id").get('id');
-    print("init state 1");
+    isportraitSupport = Hive.box("device_id").get('isPortraitModeSupported');
+    print(isportraitSupport);
+    print("_____________________");
+    // return;
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      await SystemChrome.setPreferredOrientations([
-        DeviceOrientation.portraitUp,
-      ]);
-      isPortraitModeSupported1 =
-          MediaQuery.of(context).orientation == Orientation.portrait;
-      print(MediaQuery.of(context).orientation);
-      log(isPortraitModeSupported1.toString());
-      print(isPortraitModeSupported1);
       timer = Timer.periodic(const Duration(seconds: 3), (timer) {
-        print("init state 2");
-        // print("3");
-        // final splashBloc = context.read<SplashBloc>();
-        // splashBloc.add(FetchLayoutModify());
-        // final currentState = splashBloc.state;
-        // print("LOOO1");
-
         BlocProvider.of<SplashBloc>(context).add(
           FetchLayoutModify(),
         );
-
-        // if (currentState is SplashLoaded &&
-        //     currentState.deviceDetails?.deviceDetails?.orientation ==
-        //         'landscape') {
-        //   closeInAppWebView();
-        // } else if (currentState is SplashLoaded &&
-        //     currentState.deviceDetails?.modify != false) {
-        //   print("Portrait");
-        // }
-        // print("LOOO");
       });
     });
 
@@ -90,12 +66,6 @@ class _PresentationScreenState extends State<PresentationScreen> {
 
   @override
   void dispose() {
-    // ytController?.dispose();
-    // controller?.dispose();
-    // controller2?.dispose();
-    // controller3?.dispose();
-    // controller4?.dispose();
-    print("controllers dispossing");
     super.dispose();
   }
 
@@ -106,42 +76,33 @@ class _PresentationScreenState extends State<PresentationScreen> {
     width = size.width;
     return BlocConsumer<SplashBloc, SplashState>(
       listener: (context, state) async {
-        // print("bloc listener 3");
         if (state is SplashLoaded && state.isScreenRef == true) {
-          print("bloc listener 4");
           closeInAppWebView();
-
+          // String isportraitSupport =
+          //     Hive.box("device_id").get('isPortraitModeSupported');
           Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) {
             return const PresentationScreen();
           }));
-          // await SystemChrome.setPreferredOrientations([
-          //   DeviceOrientation.portraitUp,
-          // ]);
-          isPortraitModeSupported1 =
-              MediaQuery.of(context).orientation == Orientation.portrait;
           final eleCou = state.deviceDetails?.deviceDetails?.elements;
-          print(isPortraitModeSupported1);
-          if (!isPortraitModeSupported1) {
-            print("is portrait mode supported 5");
+          if (isportraitSupport != 'true') {
+            // print("is portrait mode supported 5");
             if ((eleCou == 1 || eleCou == 2 || eleCou == 3 || eleCou == 4) &&
                 state.deviceDetails?.deviceDetails?.orientation == 'portrait') {
               laun();
-              print("is portrait mode supported 6");
+              // print("is portrait mode supported 6");
             }
+          } else {
+            closeInAppWebView();
           }
         } else if (state is SplashLoaded && state.isScreenRef == null) {
-          print("7");
+          // String isportraitSupport =
+          //     Hive.box("device_id").get('isPortraitModeSupported');
+
           final eleCou = state.deviceDetails?.deviceDetails?.elements;
-          // SystemChrome.setPreferredOrientations([
-          //   DeviceOrientation.portraitUp,
-          // ]);
-          isPortraitModeSupported1 =
-              MediaQuery.of(context).orientation == Orientation.portrait;
-          if (!isPortraitModeSupported1) {
-            print("8");
+
+          if (isportraitSupport != 'true') {
             if ((eleCou == 1 || eleCou == 2 || eleCou == 3 || eleCou == 4) &&
                 state.deviceDetails?.deviceDetails?.orientation == 'portrait') {
-              print("9");
               laun();
             }
           }
@@ -154,15 +115,16 @@ class _PresentationScreenState extends State<PresentationScreen> {
 
           if (eleCou == 4 &&
               state.deviceDetails?.deviceDetails?.orientation == 'portrait') {
-            print("10");
             SystemChrome.setPreferredOrientations([
               DeviceOrientation.portraitUp,
             ]);
-            bool isPortraitModeSupported =
-                MediaQuery.of(context).orientation == Orientation.portrait;
-            print(isPortraitModeSupported);
-            if (isPortraitModeSupported) {
-              print("11");
+            // isPortraitModeSupported =
+            //     MediaQuery.of(context).orientation == Orientation.portrait;
+
+            if (isportraitSupport == 'true') {
+              // Hive.box("device_id").put('isPortraitModeSupported',
+              //     isPortraitModeSupported.toString());
+
               closeInAppWebView();
               return buildFourScreens(
                 context,
@@ -174,18 +136,31 @@ class _PresentationScreenState extends State<PresentationScreen> {
                 ytController,
               );
             } else {
-              print("12");
               if (state.isScreenRef == null) {
-                print("13");
                 laun();
               }
             }
           } else if (eleCou == 4 &&
               state.deviceDetails?.deviceDetails?.orientation == 'landscape') {
+            // final isportraitSupport =
+            //     Hive.box("device_id").get('isPortraitModeSupported');
+
+            // if (isportraitSupport == null) {
+            //   print("checking portrait support");
+            //   SystemChrome.setPreferredOrientations([
+            //     DeviceOrientation.portraitUp,
+            //   ]);
+            //   isPortraitModeSupported =
+            //       MediaQuery.of(context).orientation == Orientation.portrait;
+            //   Hive.box("device_id").put('isPortraitModeSupported',
+            //       isPortraitModeSupported.toString());
+            // }
+
             SystemChrome.setPreferredOrientations([
               DeviceOrientation.landscapeLeft,
             ]);
 
+            print(isportraitSupport);
             return buildFourScreens(
               context,
               state,
@@ -200,9 +175,11 @@ class _PresentationScreenState extends State<PresentationScreen> {
             SystemChrome.setPreferredOrientations([
               DeviceOrientation.portraitUp,
             ]);
-            bool isPortraitModeSupported =
-                MediaQuery.of(context).orientation == Orientation.portrait;
-            if (isPortraitModeSupported) {
+            // isPortraitModeSupported =
+            //     MediaQuery.of(context).orientation == Orientation.portrait;
+            if (isportraitSupport == 'true') {
+              // Hive.box("device_id").put('isPortraitModeSupported',
+              //     isPortraitModeSupported.toString());
               closeInAppWebView();
               return buildThreeScreens(
                 context,
@@ -219,6 +196,19 @@ class _PresentationScreenState extends State<PresentationScreen> {
             }
           } else if (eleCou == 3 &&
               state.deviceDetails?.deviceDetails?.orientation == 'landscape') {
+            // final isportraitSupport =
+            //     Hive.box("device_id").get('isPortraitModeSupported');
+            // print(isportraitSupport);
+            // if (isportraitSupport == null) {
+            //   print("checking portrait support");
+            //   SystemChrome.setPreferredOrientations([
+            //     DeviceOrientation.portraitUp,
+            //   ]);
+            //   isPortraitModeSupported =
+            //       MediaQuery.of(context).orientation == Orientation.portrait;
+            //   Hive.box("device_id").put('isPortraitModeSupported',
+            //       isPortraitModeSupported.toString());
+            // }
             SystemChrome.setPreferredOrientations([
               DeviceOrientation.landscapeLeft,
             ]);
@@ -236,9 +226,11 @@ class _PresentationScreenState extends State<PresentationScreen> {
             SystemChrome.setPreferredOrientations([
               DeviceOrientation.portraitUp,
             ]);
-            bool isPortraitModeSupported =
-                MediaQuery.of(context).orientation == Orientation.portrait;
-            if (isPortraitModeSupported) {
+            // isPortraitModeSupported =
+            //     MediaQuery.of(context).orientation == Orientation.portrait;
+            if (isportraitSupport == 'true') {
+              // Hive.box("device_id").put('isPortraitModeSupported',
+              //     isPortraitModeSupported.toString());
               closeInAppWebView();
               return buildTwoScreensPor(
                 context,
@@ -254,6 +246,19 @@ class _PresentationScreenState extends State<PresentationScreen> {
             }
           } else if (eleCou == 2 &&
               state.deviceDetails?.deviceDetails?.orientation == 'landscape') {
+            // final isportraitSupport =
+            //     Hive.box("device_id").get('isPortraitModeSupported');
+            // print(isportraitSupport);
+            // if (isportraitSupport == null) {
+            //   print("checking portrait support");
+            //   SystemChrome.setPreferredOrientations([
+            //     DeviceOrientation.portraitUp,
+            //   ]);
+            //   isPortraitModeSupported =
+            //       MediaQuery.of(context).orientation == Orientation.portrait;
+            //   Hive.box("device_id").put('isPortraitModeSupported',
+            //       isPortraitModeSupported.toString());
+            // }
             // Navigator.pop(context);
 
             // print(isLaunched);
@@ -272,9 +277,11 @@ class _PresentationScreenState extends State<PresentationScreen> {
             SystemChrome.setPreferredOrientations([
               DeviceOrientation.portraitUp,
             ]);
-            bool isPortraitModeSupported =
-                MediaQuery.of(context).orientation == Orientation.portrait;
-            if (isPortraitModeSupported) {
+            // isPortraitModeSupported =
+            //     MediaQuery.of(context).orientation == Orientation.portrait;
+            if (isportraitSupport == 'true') {
+              // Hive.box("device_id").put('isPortraitModeSupported',
+              //     isPortraitModeSupported.toString());
               closeInAppWebView();
               return buildOneScreen(
                 context,
@@ -289,6 +296,19 @@ class _PresentationScreenState extends State<PresentationScreen> {
             }
           } else if (eleCou == 1 &&
               state.deviceDetails?.deviceDetails?.orientation == 'landscape') {
+            // final isportraitSupport =
+            //     Hive.box("device_id").get('isPortraitModeSupported');
+            // print(isportraitSupport);
+            // if (isportraitSupport == null) {
+            //   print("checking portrait support");
+            //   SystemChrome.setPreferredOrientations([
+            //     DeviceOrientation.portraitUp,
+            //   ]);
+            //   isPortraitModeSupported =
+            //       MediaQuery.of(context).orientation == Orientation.portrait;
+            //   Hive.box("device_id").put('isPortraitModeSupported',
+            //       isPortraitModeSupported.toString());
+            // }
             // Navigator.pop(context);
             SystemChrome.setPreferredOrientations([
               DeviceOrientation.landscapeLeft,
