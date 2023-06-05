@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hive/hive.dart';
 import 'package:split_screen_app/application/bloc/splash_bloc.dart';
 import 'package:split_screen_app/core/controllers/controllers.dart';
 import 'package:split_screen_app/domain/core/api_endPoint.dart';
@@ -25,12 +24,12 @@ class _PresentationScreenState extends State<PresentationScreen> {
   bool isLaunched = false;
   double width = 0;
   double height = 0;
-  dynamic isportraitSupport;
+  dynamic isportraitSupport = 'false';
   // bool isPortraitModeSupported = true;
   @override
   void initState() {
     super.initState();
-    isportraitSupport = Hive.box("device_id").get('isPortraitModeSupported');
+    // isportraitSupport = Hive.box("device_id").get('isPortraitModeSupported');
     print(isportraitSupport);
     print("_____________________");
     // return;
