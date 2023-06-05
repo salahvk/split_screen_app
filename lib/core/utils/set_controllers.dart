@@ -1,11 +1,9 @@
-import 'dart:developer';
-
+import 'package:hive/hive.dart';
 import 'package:split_screen_app/core/controllers/controllers.dart';
 import 'package:split_screen_app/core/utils/change_url.dart';
 import 'package:split_screen_app/domain/core/api_endPoint.dart';
 import 'package:split_screen_app/domain/device_layout_details/device_layout.dart';
 import 'package:video_player/video_player.dart';
-import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 setControllers(DeviceLayoutDetails deviceDetailsModel) async {
   // List urls = [];
@@ -45,25 +43,7 @@ setControllers(DeviceLayoutDetails deviceDetailsModel) async {
       controller?.initialize();
       controller?.play();
     } else if (deviceDetailsModel.media?[0].type == "youtube") {
-      ytController = YoutubePlayerController(
-        initialVideoId: url1 ?? '',
-        flags: const YoutubePlayerFlags(
-          mute: false,
-          autoPlay: true,
-          disableDragSeek: false,
-          loop: true,
-          isLive: false,
-          forceHD: false,
-          enableCaption: false,
-        ),
-      );
-      ytController?.play();
-      ytController?.addListener(
-        () {
-          log("Listening");
-        },
-      );
-      print(ytController?.initialVideoId ?? '');
+      Hive.box("device_id").put('url', url1);
     }
   }
   if (deviceDetailsModel.deviceDetails!.elements! > 1) {

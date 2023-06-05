@@ -26,8 +26,7 @@ Widget buildFourScreens(
                 state.deviceDetails?.media?[0].type == 'image'
                     ? buildOneImage(size, state, 0, size.height)
                     : state.deviceDetails?.media?[0].type == 'youtube'
-                        ? buildYtbvideo(
-                            context, size, ytController, size.height)
+                        ? YtbVideoWidget1(height: size.height)
                         : state.deviceDetails?.media?[0].type == 'video'
                             ? buildvideo(
                                 context, size, vlcontroller, size.height)

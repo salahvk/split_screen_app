@@ -36,9 +36,11 @@ class _PresentationScreenState extends State<PresentationScreen> {
     // return;
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       timer = Timer.periodic(const Duration(seconds: 3), (timer) {
-        BlocProvider.of<SplashBloc>(context).add(
-          FetchLayoutModify(),
-        );
+        try {
+          BlocProvider.of<SplashBloc>(context).add(
+            FetchLayoutModify(),
+          );
+        } catch (_) {}
       });
     });
 

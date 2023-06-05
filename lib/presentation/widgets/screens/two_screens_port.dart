@@ -21,8 +21,7 @@ Widget buildTwoScreensPor(
           state.deviceDetails?.media?[0].type == 'image'
               ? buildOneImage(size, state, 0, size.height * .9)
               : state.deviceDetails?.media?[0].type == 'youtube'
-                  ? buildYtbvideo(
-                      context, size, ytController1, size.height * .9)
+                  ? YtbVideoWidget1(height: size.height * .9)
                   : state.deviceDetails?.media?[0].type == 'video'
                       ? buildvideo(context, size, controller, size.height * .9)
                       : state.deviceDetails?.media?[0].type == 'carousel'

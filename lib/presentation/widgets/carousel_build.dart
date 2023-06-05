@@ -59,10 +59,12 @@ class _CarouselSlider1State extends State<CarouselSlider1> {
   void _startAutoPlay() {
     Future.delayed(const Duration(seconds: 2)).then((_) {
       // print(_currentPage);
-      _pageController.nextPage(
-        duration: const Duration(milliseconds: 500),
-        curve: curve,
-      );
+      try {
+        _pageController.nextPage(
+          duration: const Duration(milliseconds: 500),
+          curve: curve,
+        );
+      } catch (_) {}
     });
   }
 
@@ -245,10 +247,12 @@ class _CarouselSlider2State extends State<CarouselSlider2> {
 
   void _startAutoPlay() {
     Future.delayed(const Duration(seconds: 2)).then((_) {
-      _pageController.nextPage(
-        duration: Duration(microseconds: widget.dur),
-        curve: curve,
-      );
+      try {
+        _pageController.nextPage(
+          duration: Duration(microseconds: widget.dur),
+          curve: curve,
+        );
+      } catch (_) {}
     });
   }
 

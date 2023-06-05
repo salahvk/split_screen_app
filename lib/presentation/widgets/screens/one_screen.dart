@@ -1,7 +1,9 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:split_screen_app/application/bloc/splash_bloc.dart';
+import 'package:split_screen_app/core/controllers/controllers.dart';
 import 'package:split_screen_app/domain/core/api_endPoint.dart';
 import 'package:split_screen_app/presentation/widgets/carousel_build.dart';
 import 'package:video_player/video_player.dart';
@@ -16,7 +18,7 @@ Widget buildOneScreen(
     body: state.deviceDetails?.media?[0].type == 'image'
         ? buildImage(size, state, 0, size.height)
         : state.deviceDetails?.media?[0].type == 'youtube'
-            ? buildOneYtbvideo(context, size, ytController, size.height)
+            ? YtbVideoWidget(height: size.height)
             : state.deviceDetails?.media?[0].type == 'video'
                 ? CustomVideoPlayer(
                     controller: controller,
@@ -88,27 +90,93 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
   }
 }
 
-Widget buildOneYtbvideo(BuildContext context, size, ytcontroller, height) {
-  return ClipRRect(
-    borderRadius: BorderRadius.circular(14),
-    child: SizedBox(
-      height: height,
-      width: size.width,
-      // decoration: BoxDecoration(borderRadius: BorderRadius.circular(25)),
-      child: YoutubePlayer(
-        controller: ytcontroller,
-        showVideoProgressIndicator: true,
-        // videoProgressIndicatorColor: Colors.amber,
-        progressColors: const ProgressBarColors(
-          playedColor: Colors.amber,
-          handleColor: Colors.amberAccent,
-        ),
-        onReady: () {
-          log("Ready");
-        },
+// Widget buildOneYtbvideo(BuildContext context, size, ytcontroller, height) {
+//   return ClipRRect(
+//     borderRadius: BorderRadius.circular(14),
+//     child: SizedBox(
+//       height: height,
+//       width: size.width,
+//       // decoration: BoxDecoration(borderRadius: BorderRadius.circular(25)),
+//       child: YoutubePlayer(
+//         controller: ytcontroller,
+//         showVideoProgressIndicator: true,
+//         // videoProgressIndicatorColor: Colors.amber,
+//         progressColors: const ProgressBarColors(
+//           playedColor: Colors.amber,
+//           handleColor: Colors.amberAccent,
+//         ),
+//         onReady: () {
+//           log("Ready");
+//         },
+//       ),
+//     ),
+//   );
+// }
+class YtbVideoWidget extends StatefulWidget {
+  final double height;
+  // final YoutubePlayerController ytController;
+
+  const YtbVideoWidget({
+    Key? key,
+    required this.height,
+    // required this.ytController,
+  }) : super(key: key);
+
+  @override
+  State<YtbVideoWidget> createState() => _YtbVideoWidgetState();
+}
+
+class _YtbVideoWidgetState extends State<YtbVideoWidget> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    final url = Hive.box("device_id").get('url');
+    ytController = YoutubePlayerController(
+      initialVideoId: url ?? '',
+      flags: const YoutubePlayerFlags(
+        mute: false,
+        autoPlay: true,
+        disableDragSeek: false,
+        loop: true,
+        isLive: false,
+        forceHD: false,
+        enableCaption: false,
       ),
-    ),
-  );
+    );
+    ytController?.play();
+    ytController?.addListener(
+      () {
+        log("Listening");
+      },
+    );
+    print(ytController?.initialVideoId ?? '');
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(14),
+      child: SizedBox(
+        height: widget.height,
+        width: MediaQuery.of(context).size.width,
+        // decoration: BoxDecoration(borderRadius: BorderRadius.circular(25)),
+        child: YoutubePlayer(
+          controller:
+              ytController ?? YoutubePlayerController(initialVideoId: ''),
+          showVideoProgressIndicator: true,
+          // videoProgressIndicatorColor: Colors.amber,
+          progressColors: const ProgressBarColors(
+            playedColor: Colors.amber,
+            handleColor: Colors.amberAccent,
+          ),
+          onReady: () {
+            debugPrint("Ready");
+          },
+        ),
+      ),
+    );
+  }
 }
 
 // Widget buildCarousel2(size, height, List<String> imageList, dur) {

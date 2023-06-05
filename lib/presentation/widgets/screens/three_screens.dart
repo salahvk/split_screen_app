@@ -22,7 +22,7 @@ Widget buildThreeScreens(
           state.deviceDetails?.media?[0].type == 'image'
               ? buildOneImage(size, state, 0, size.height)
               : state.deviceDetails?.media?[0].type == 'youtube'
-                  ? buildYtbvideo(context, size, ytController, size.height)
+                  ? YtbVideoWidget1(height: size.height)
                   : state.deviceDetails?.media?[0].type == 'video'
                       ? buildvideo(context, size, controller, size.height)
                       : state.deviceDetails?.media?[0].type == 'carousel'
