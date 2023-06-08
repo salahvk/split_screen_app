@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
@@ -24,7 +25,7 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
       try {
         String? deviceId;
         emit(SplashLoading());
-        // await Future.delayed(const Duration(seconds: 3));
+        // await Future.delayed(const Duration(seconds: 1));
 
         try {
           deviceId = await PlatformDeviceId.getDeviceId;
@@ -40,7 +41,7 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
         final deviceDetailsModel =
             result.getOrElse(() => DeviceLayoutDetails());
         if (deviceDetailsModel.status == false) {
-          // await Future.delayed(const Duration(seconds: 3));
+          // await Future.delayed(const Duration(seconds: 1));
           emit(SplashLoaded(
               deviceId: deviceId,
               isDeviceReg: false,
@@ -107,14 +108,14 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
         headers: headers,
       );
       var jsonResponse = jsonDecode(response.body);
-      // log(response.body);
+      log(response.body);
       if (jsonResponse["status"] == false) {
         emit(SplashLoaded(
             deviceId: deviceId, isDeviceReg: false, isScreenRef: false));
       }
       if (jsonResponse["modify"] == true) {
         try {
-          ytController?.dispose();
+          ytController?.close();
         } catch (_) {}
 
         controller?.dispose();

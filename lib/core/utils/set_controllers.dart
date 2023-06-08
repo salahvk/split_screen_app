@@ -1,9 +1,9 @@
-import 'package:hive/hive.dart';
 import 'package:split_screen_app/core/controllers/controllers.dart';
 import 'package:split_screen_app/core/utils/change_url.dart';
 import 'package:split_screen_app/domain/core/api_endPoint.dart';
 import 'package:split_screen_app/domain/device_layout_details/device_layout.dart';
 import 'package:video_player/video_player.dart';
+import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
 setControllers(DeviceLayoutDetails deviceDetailsModel) async {
   // List urls = [];
@@ -43,7 +43,20 @@ setControllers(DeviceLayoutDetails deviceDetailsModel) async {
       controller?.initialize();
       controller?.play();
     } else if (deviceDetailsModel.media?[0].type == "youtube") {
-      Hive.box("device_id").put('url', url1);
+      ytController = YoutubePlayerController(
+        params: const YoutubePlayerParams(
+            mute: false,
+            showControls: true,
+            showFullscreenButton: true,
+            loop: true),
+      );
+
+      ytController?.loadVideoById(videoId: url1 ?? ''); // Auto Play
+      // var logger = Logger();
+      // logger.d("___________________________________");
+      print("video playing");
+
+      // Hive.box("device_id").put('url', url1);
     }
   }
   if (deviceDetailsModel.deviceDetails!.elements! > 1) {

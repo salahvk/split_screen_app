@@ -1,4 +1,4 @@
-package com.example.split_screen_app
+package com.alpha.signage
 
 import io.flutter.embedding.android.FlutterActivity
 

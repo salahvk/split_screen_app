@@ -28,12 +28,13 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (ctx) => SplashBloc()),
       ],
       child: MaterialApp(
-        title: 'Flutter Demo',
+        title: 'Alpha Signage',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
         home: const LandingScreen(),
+        // home: Demy(),
         // home: const YoutubeVlcPlayer(videoId: 'qUzpCqXZIYw'),
       ),
     );

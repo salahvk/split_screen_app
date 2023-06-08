@@ -1,14 +1,12 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
 import 'package:split_screen_app/application/bloc/splash_bloc.dart';
 import 'package:split_screen_app/core/controllers/controllers.dart';
 import 'package:split_screen_app/domain/core/api_endPoint.dart';
 import 'package:split_screen_app/presentation/widgets/carousel_build.dart';
 import 'package:video_player/video_player.dart';
-
-import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
 Widget buildOneScreen(
     BuildContext context, SplashLoaded state, controller, ytController) {
@@ -112,6 +110,7 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
 //     ),
 //   );
 // }
+
 class YtbVideoWidget extends StatefulWidget {
   final double height;
   // final YoutubePlayerController ytController;
@@ -131,26 +130,19 @@ class _YtbVideoWidgetState extends State<YtbVideoWidget> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    final url = Hive.box("device_id").get('url');
-    ytController = YoutubePlayerController(
-      initialVideoId: url ?? '',
-      flags: const YoutubePlayerFlags(
-        mute: false,
-        autoPlay: true,
-        disableDragSeek: false,
-        loop: true,
-        isLive: false,
-        forceHD: false,
-        enableCaption: false,
-      ),
-    );
-    ytController?.play();
-    ytController?.addListener(
-      () {
-        log("Listening");
-      },
-    );
-    print(ytController?.initialVideoId ?? '');
+    // final url = Hive.box("device_id").get('url');
+    // ytController = YoutubePlayerController(
+    //   params: const YoutubePlayerParams(
+    //       mute: false,
+    //       showControls: true,
+    //       showFullscreenButton: true,
+    //       loop: true),
+    // );
+
+    // ytController?.loadVideoById(videoId: url); // Auto Play
+    // var logger = Logger();
+    // logger.d("___________________________________");
+    // print("video playing");
   }
 
   @override
@@ -158,23 +150,13 @@ class _YtbVideoWidgetState extends State<YtbVideoWidget> {
     return ClipRRect(
       borderRadius: BorderRadius.circular(14),
       child: SizedBox(
-        height: widget.height,
-        width: MediaQuery.of(context).size.width,
-        // decoration: BoxDecoration(borderRadius: BorderRadius.circular(25)),
-        child: YoutubePlayer(
-          controller:
-              ytController ?? YoutubePlayerController(initialVideoId: ''),
-          showVideoProgressIndicator: true,
-          // videoProgressIndicatorColor: Colors.amber,
-          progressColors: const ProgressBarColors(
-            playedColor: Colors.amber,
-            handleColor: Colors.amberAccent,
-          ),
-          onReady: () {
-            debugPrint("Ready");
-          },
-        ),
-      ),
+          height: widget.height,
+          width: MediaQuery.of(context).size.width,
+          // decoration: BoxDecoration(borderRadius: BorderRadius.circular(25)),
+          child: YoutubePlayer(
+            controller: ytController ?? YoutubePlayerController(),
+            aspectRatio: 16 / 9,
+          )),
     );
   }
 }
