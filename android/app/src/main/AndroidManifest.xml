@@ -4,7 +4,7 @@
     <uses-feature android:name="android.software.leanback" android:required="false" />
    <application
         android:networkSecurityConfig="@xml/network_security_config"
-        android:label="Alpha Signage"
+        android:label="Alphasignage"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

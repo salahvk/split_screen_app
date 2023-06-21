@@ -57,10 +57,10 @@ class _LoginPageState extends State<LoginPage> {
       body: Stack(
         children: [
           Image.asset(
-            'assets/tech1.png',
-            fit: BoxFit.cover,
+            'assets/Alpha.jpg',
+            fit: BoxFit.fitHeight,
             width: size.width,
-            height: size.height,
+            height: size.height * .6,
           ),
           Container(
             decoration: BoxDecoration(
@@ -68,8 +68,8 @@ class _LoginPageState extends State<LoginPage> {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  const Color(0xff000A47).withOpacity(.7),
-                  const Color(0xff039CA6).withOpacity(.7),
+                  const Color(0xff000A47).withOpacity(.2),
+                  const Color(0xff039CA6).withOpacity(.2),
                 ],
               ),
             ),
@@ -80,9 +80,12 @@ class _LoginPageState extends State<LoginPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                SizedBox(
+                  height: size.height * .55,
+                ),
                 Text(
                   "Ready to Watch ?",
-                  style: getMediumtStyle(color: Colors.white, fontSize: 25),
+                  style: getMediumtStyle(color: Colors.black, fontSize: 25),
                 ),
                 const SizedBox(
                   height: 2,
@@ -90,11 +93,11 @@ class _LoginPageState extends State<LoginPage> {
                 Text(
                   "Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet",
                   textAlign: TextAlign.center,
-                  style: getLightStyle(color: Colors.white, fontSize: 10)
+                  style: getLightStyle(color: Colors.black, fontSize: 10)
                       .copyWith(height: 2, wordSpacing: 1),
                 ),
                 const SizedBox(
-                  height: 20,
+                  height: 0,
                 ),
                 BlocConsumer<SplashBloc, SplashState>(
                   listener: (context, state) {
@@ -118,18 +121,29 @@ class _LoginPageState extends State<LoginPage> {
                           child: Column(
                             children: [
                               Padding(
-                                padding: const EdgeInsets.only(bottom: 5),
+                                padding: const EdgeInsets.only(bottom: 0),
                                 child: Text(
                                   state.message ?? '',
                                   style: getMediumtStyle(
                                       color: Colors.white, fontSize: 13),
                                 ),
                               ),
-                              Text(
-                                "Device Id : ${state.deviceId ?? deviceId}",
-                                style: getSemiBoldStyle(
-                                    color: Colors.white, fontSize: 13),
-                              ),
+                              Container(
+                                decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: Colors.white,
+                                    ),
+                                    borderRadius: BorderRadius.circular(5),
+                                    color: Colors.black),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    "Device Id : ${state.deviceId ?? deviceId}",
+                                    style: getSemiBoldStyle(
+                                        color: Colors.white, fontSize: 13),
+                                  ),
+                                ),
+                              )
                             ],
                           ),
                         ),

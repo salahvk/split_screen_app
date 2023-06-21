@@ -38,17 +38,18 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
 
         Either<MainFailure, DeviceLayoutDetails> result =
             await LayoutImp().getLayoutDetails();
+
         final deviceDetailsModel =
             result.getOrElse(() => DeviceLayoutDetails());
         if (deviceDetailsModel.status == false) {
-          // await Future.delayed(const Duration(seconds: 1));
+          await Future.delayed(const Duration(seconds: 3));
           emit(SplashLoaded(
               deviceId: deviceId,
               isDeviceReg: false,
               isNavToLogin: false,
               message: deviceDetailsModel.message));
         } else {
-          // await Future.delayed(const Duration(seconds: 3));
+          await Future.delayed(const Duration(seconds: 3));
           final updatedTime = deviceDetailsModel.deviceDetails?.layoutUpdatedAt;
           Hive.box("updated_at").put('time', updatedTime ?? '');
           print("object");

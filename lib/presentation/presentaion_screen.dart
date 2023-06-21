@@ -145,6 +145,7 @@ class _PresentationScreenState extends State<PresentationScreen> {
             ]);
             laun();
             return WebViewWidget(controller: webController);
+            // return buildImage(context, state);
           } else if (eleCou == 1 &&
               state.deviceDetails?.deviceDetails?.orientation == 'landscape') {
             SystemChrome.setPreferredOrientations([
@@ -157,10 +158,10 @@ class _PresentationScreenState extends State<PresentationScreen> {
               ytController,
             );
           }
-          // return buildImage(context);
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
+          return buildImage(context, state);
+          // return const Center(
+          //   child: CircularProgressIndicator(),
+          // );
         }
         return Container();
       },
@@ -168,11 +169,12 @@ class _PresentationScreenState extends State<PresentationScreen> {
   }
 }
 
-Widget buildImage(BuildContext context) {
+Widget buildImage(BuildContext context, SplashLoaded state) {
+  print("$endPoint${state.deviceDetails?.deviceDetails?.defaultImage}");
   final size = MediaQuery.of(context).size;
   return Scaffold(
-    body: Image.asset(
-      'assets/image.png',
+    body: Image.network(
+      "$endPoint${state.deviceDetails?.deviceDetails?.defaultImage}",
       fit: BoxFit.cover,
       width: size.width,
       height: size.height,
