@@ -5,7 +5,10 @@ abstract class SplashState {}
 
 class SplashInitial extends SplashState {}
 
-class SplashLoading extends SplashState {}
+class SplashLoading extends SplashState {
+  MainFailure? error;
+  SplashLoading({this.error});
+}
 
 class SplashLoaded extends SplashState {
   String? deviceId;

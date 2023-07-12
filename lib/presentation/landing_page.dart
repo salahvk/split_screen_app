@@ -52,6 +52,14 @@ class _LandingScreenState extends State<LandingScreen>
             return const PresentationScreen();
           }));
         }
+        //  else if (state is SplashLoading) {
+        //   print(state.error);
+        //   if (state.error == const MainFailure.clientFailure()) {
+        //     showAnimatedSnackBar(context, "No Network");
+        //   } else if (state.error == const MainFailure.serverFailure()) {
+        //     showAnimatedSnackBar(context, "Server Error");
+        //   }
+        // }
         // else if (state is SplashLoading) {}
       },
       child: Stack(

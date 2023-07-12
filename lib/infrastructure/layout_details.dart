@@ -12,6 +12,41 @@ import 'package:split_screen_app/domain/device_layout_details/device_layout.dart
 import 'package:split_screen_app/domain/failures/main_failures.dart';
 import 'package:split_screen_app/domain/layout_services.dart';
 
+// Future<String> fetchLayout()async{
+//   try {
+//       final httpClient = HttpClient();
+//       httpClient.badCertificateCallback =
+//           (X509Certificate cert, String host, int port) => true;
+
+//       final url = Uri.parse(ApiEndPoint.layoutDetails);
+//       final request = await httpClient.postUrl(url);
+//       final response = await request.close();
+//       final responseBody = await response.transform(utf8.decoder).join();
+//       HttpOverrides.global = CustomHttpOverrides();
+
+//       httpClient.close();
+
+//       var jsonResponse = jsonDecode(responseBody);
+//       if (response.statusCode == 200 || response.statusCode == 201) {
+//         final result = DeviceLayoutDetails.fromJson(jsonResponse);
+//         log(responseBody);
+//         return Right(result);
+//       } else {
+//         return const Left(MainFailure.serverFailure());
+//       }
+//     } on Error catch (e) {
+//       log(e.toString());
+//       if (e is http.ClientException) {
+//         return const Left(MainFailure.clientFailure());
+//       } else {
+//         return const Left(MainFailure.serverFailure());
+//       }
+//     } catch (e) {
+//       log(e.toString());
+//       return const Left(MainFailure.clientFailure());
+//     }
+// }
+
 @LazySingleton(as: LayoutServices)
 class LayoutImp implements LayoutServices {
   @override

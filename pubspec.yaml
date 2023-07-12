@@ -59,7 +59,8 @@ dependencies:
   # url_launcher: ^6.1.11
   youtube_player_iframe: ^4.0.4
   logger: ^1.4.0
-  webview_flutter: ^4.2.2
+  # webview_flutter: ^4.2.2
+  webviewx_plus: ^0.3.3
   # flutter_inappwebview: ^5.7.2+3
   # webview_flutter: ^4.2.1
   # webview_flutter: ^4.2.1

@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,7 +9,8 @@ import 'package:split_screen_app/presentation/widgets/screens/four_screens.dart'
 import 'package:split_screen_app/presentation/widgets/screens/one_screen.dart';
 import 'package:split_screen_app/presentation/widgets/screens/three_screens.dart';
 import 'package:split_screen_app/presentation/widgets/screens/two_screens.dart';
-import 'package:webview_flutter/webview_flutter.dart';
+// import 'package:webview_flutter/webview_flutter.dart';
+import 'package:webviewx_plus/webviewx_plus.dart';
 
 class PresentationScreen extends StatefulWidget {
   const PresentationScreen({super.key});
@@ -25,7 +25,7 @@ class _PresentationScreenState extends State<PresentationScreen> {
   double width = 0;
   double height = 0;
   dynamic isportraitSupport = "false";
-  WebViewController webController = WebViewController();
+  // WebViewController webController = WebViewController();
 
   @override
   void initState() {
@@ -40,18 +40,19 @@ class _PresentationScreenState extends State<PresentationScreen> {
     });
   }
 
-  Future laun() async {
+  String laun() {
     final url = '$endPoint/show-layout/$deviceId?width=$height&height=$width';
-    log(url);
-    try {
-      if (isLaunched == false) {
-        isLaunched = true;
-        webController = WebViewController()
-          ..setJavaScriptMode(JavaScriptMode.unrestricted)
-          ..setBackgroundColor(const Color(0x00000000))
-          ..loadRequest(Uri.parse(url));
-      }
-    } catch (_) {}
+    // log(url);
+    return url;
+    // try {
+    //   if (isLaunched == false) {
+    //     isLaunched = true;
+    //     webController = WebViewController()
+    //       ..setJavaScriptMode(JavaScriptMode.unrestricted)
+    //       ..setBackgroundColor(const Color(0x00000000))
+    //       ..loadRequest(Uri.parse(url));
+    //   }
+    // } catch (_) {}
   }
 
   @override
@@ -82,8 +83,16 @@ class _PresentationScreenState extends State<PresentationScreen> {
             SystemChrome.setPreferredOrientations([
               DeviceOrientation.landscapeLeft,
             ]);
-            laun();
-            return WebViewWidget(controller: webController);
+            // laun();
+            // return WebViewWidget(controller: webController);
+            final url = laun();
+            return WebViewX(
+              width: width,
+              initialMediaPlaybackPolicy: AutoMediaPlaybackPolicy.alwaysAllow,
+              height: height,
+              initialContent: url,
+              initialSourceType: SourceType.url,
+            );
           } else if (eleCou == 4 &&
               state.deviceDetails?.deviceDetails?.orientation == 'landscape') {
             SystemChrome.setPreferredOrientations([
@@ -103,8 +112,16 @@ class _PresentationScreenState extends State<PresentationScreen> {
             SystemChrome.setPreferredOrientations([
               DeviceOrientation.landscapeLeft,
             ]);
-            laun();
-            return WebViewWidget(controller: webController);
+            // laun();
+            // return WebViewWidget(controller: webController);
+            final url = laun();
+            return WebViewX(
+              width: width,
+              initialMediaPlaybackPolicy: AutoMediaPlaybackPolicy.alwaysAllow,
+              height: height,
+              initialContent: url,
+              initialSourceType: SourceType.url,
+            );
           } else if (eleCou == 3 &&
               state.deviceDetails?.deviceDetails?.orientation == 'landscape') {
             SystemChrome.setPreferredOrientations([
@@ -124,8 +141,16 @@ class _PresentationScreenState extends State<PresentationScreen> {
             SystemChrome.setPreferredOrientations([
               DeviceOrientation.landscapeLeft,
             ]);
-            laun();
-            return WebViewWidget(controller: webController);
+            // laun();
+            // return WebViewWidget(controller: webController);
+            final url = laun();
+            return WebViewX(
+              width: width,
+              initialMediaPlaybackPolicy: AutoMediaPlaybackPolicy.alwaysAllow,
+              height: height,
+              initialContent: url,
+              initialSourceType: SourceType.url,
+            );
           } else if (eleCou == 2 &&
               state.deviceDetails?.deviceDetails?.orientation == 'landscape') {
             SystemChrome.setPreferredOrientations([
@@ -143,8 +168,14 @@ class _PresentationScreenState extends State<PresentationScreen> {
             SystemChrome.setPreferredOrientations([
               DeviceOrientation.landscapeLeft,
             ]);
-            laun();
-            return WebViewWidget(controller: webController);
+            final url = laun();
+            return WebViewX(
+              width: width,
+              initialMediaPlaybackPolicy: AutoMediaPlaybackPolicy.alwaysAllow,
+              height: height,
+              initialContent: url,
+              initialSourceType: SourceType.url,
+            );
             // return buildImage(context, state);
           } else if (eleCou == 1 &&
               state.deviceDetails?.deviceDetails?.orientation == 'landscape') {

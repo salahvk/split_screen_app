@@ -24,7 +24,7 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
     on<FetchDeviceId>((event, emit) async {
       try {
         String? deviceId;
-        emit(SplashLoading());
+
         // await Future.delayed(const Duration(seconds: 1));
 
         try {
@@ -39,27 +39,32 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
         Either<MainFailure, DeviceLayoutDetails> result =
             await LayoutImp().getLayoutDetails();
 
-        final deviceDetailsModel =
-            result.getOrElse(() => DeviceLayoutDetails());
-        if (deviceDetailsModel.status == false) {
-          await Future.delayed(const Duration(seconds: 3));
-          emit(SplashLoaded(
-              deviceId: deviceId,
-              isDeviceReg: false,
-              isNavToLogin: false,
-              message: deviceDetailsModel.message));
-        } else {
-          await Future.delayed(const Duration(seconds: 3));
-          final updatedTime = deviceDetailsModel.deviceDetails?.layoutUpdatedAt;
-          Hive.box("updated_at").put('time', updatedTime ?? '');
-          print("object");
-          await setControllers(deviceDetailsModel);
+        await result.fold((falure) {
+          emit(SplashLoading(error: falure));
+        }, (success) async {
+          final deviceDetailsModel =
+              result.getOrElse(() => DeviceLayoutDetails());
+          if (deviceDetailsModel.status == false) {
+            await Future.delayed(const Duration(seconds: 3));
+            emit(SplashLoaded(
+                deviceId: deviceId,
+                isDeviceReg: false,
+                isNavToLogin: false,
+                message: deviceDetailsModel.message));
+          } else {
+            await Future.delayed(const Duration(seconds: 3));
+            final updatedTime =
+                deviceDetailsModel.deviceDetails?.layoutUpdatedAt;
+            Hive.box("updated_at").put('time', updatedTime ?? '');
+            print("object");
+            await setControllers(deviceDetailsModel);
 
-          emit(SplashLoaded(
-              deviceId: deviceId,
-              isDeviceReg: true,
-              deviceDetails: deviceDetailsModel));
-        }
+            emit(SplashLoaded(
+                deviceId: deviceId,
+                isDeviceReg: true,
+                deviceDetails: deviceDetailsModel));
+          }
+        });
       } catch (_) {
         // deviceId = 'Failed to get deviceId.';
       }

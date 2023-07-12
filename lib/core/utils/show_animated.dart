@@ -5,7 +5,7 @@ showAnimatedSnackBar(BuildContext context, String text, {type}) {
   AnimatedSnackBar.material(text,
           type: AnimatedSnackBarType.error,
           borderRadius: BorderRadius.circular(6),
-          duration: const Duration(seconds: 20))
+          duration: const Duration(seconds: 5))
       .show(
     context,
   );
