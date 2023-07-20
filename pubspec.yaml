@@ -61,6 +61,8 @@ dependencies:
   logger: ^1.4.0
   # webview_flutter: ^4.2.2
   webviewx_plus: ^0.3.3
+  firebase_core: ^2.15.0
+  firebase_database: ^10.2.4
   # flutter_inappwebview: ^5.7.2+3
   # webview_flutter: ^4.2.1
   # webview_flutter: ^4.2.1

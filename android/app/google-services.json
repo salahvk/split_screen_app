@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1061671691247",
+    "firebase_url": "https://alphasignage-48b92-default-rtdb.firebaseio.com",
+    "project_id": "alphasignage-48b92",
+    "storage_bucket": "alphasignage-48b92.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1061671691247:android:687c844bc40469d272cc1a",
+        "android_client_info": {
+          "package_name": "com.alpha.signage"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1061671691247-fem6fjede15p8vcsjckk1dqicbv2pd3v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB3iqi5JWfsIWNn6--OULpXgOhKT46zz8w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1061671691247-fem6fjede15p8vcsjckk1dqicbv2pd3v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

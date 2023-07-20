@@ -4,7 +4,8 @@ import 'package:hive/hive.dart';
 // String endPoint = "https://projects.techoriz.in/digitalsignature/public";
 // String endPoint = "https://oxicodes.in/digitalarts.com/demo/public";
 
-String endPoint = "https://alphasignage.online";
+// String endPoint = "https://alphasignage.online";
+String endPoint = "http://192.168.29.133:8000";
 
 String api = "$endPoint/api";
 String deviceId = Hive.box("device_id").get('id');
