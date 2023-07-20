@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,18 +26,49 @@ class _PresentationScreenState extends State<PresentationScreen> {
   double width = 0;
   double height = 0;
   dynamic isportraitSupport = "false";
+    final databaseReference = FirebaseDatabase.instance.ref();
   // WebViewController webController = WebViewController();
 
   @override
   void initState() {
     super.initState();
     isLaunched = false;
+    
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      timer = Timer.periodic(const Duration(seconds: 3), (timer) {
-        BlocProvider.of<SplashBloc>(context).add(
+
+            // Read data from Firebase using onValue
+              databaseReference.child('devices').onValue.listen((event) {
+                // event.snapshot contains the data at the "devices" location
+                Map<dynamic, dynamic> devices =
+                    (event.snapshot.value as Map<dynamic, dynamic>);
+
+                
+                  devices.forEach((key, value) {
+                    if (key == deviceId && value["isUpdated"] == true) {
+                      print('Device ID: $key');
+                      print('isUpdated: ${value["isUpdated"]}');
+                      print('Yes');
+   BlocProvider.of<SplashBloc>(context).add(
           FetchLayoutModify(),
         );
-      });
+                      // Update the value of "isUpdated" to false
+                     // Delete the node with "isUpdated: true"
+                      databaseReference.child('devices').child(key).remove().then((_) {
+                        print('Node with "isUpdated: true" is deleted from Firebase');
+                      }).catchError((error) {
+                        print('Error deleting node: $error');
+                      });
+                    }
+                  });
+               
+              }, onError: (error) {
+                print('Error: $error');
+              });
+      // timer = Timer.periodic(const Duration(seconds: 3), (timer) {
+      //   BlocProvider.of<SplashBloc>(context).add(
+      //     FetchLayoutModify(),
+      //   );
+      // });
     });
   }
 
